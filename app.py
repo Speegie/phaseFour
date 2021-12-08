@@ -30,13 +30,40 @@ def index():
         return redirect('/users')
     return render_template('index.html')
 
+
 @app.route('/users')
 def users():
     cur = mysql.connection.cursor()
     resultValue = cur.execute("SELECT * FROM accounts")
+    print(resultValue)
     if resultValue > 0:
         userDetails = cur.fetchall()
         return render_template('users.html', userDetails=userDetails)
+
+
+
+
+@app.route('/viewAirlines')
+def viewAirlines():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM view_airlines")
+    if resultValue > 0:
+        viewAirlineDetails = cur.fetchall()
+        return render_template('viewAirlines.html', viewAirlineDetails=viewAirlineDetails)
+
+@app.route('/viewOwners')
+def viewOwners():
+    cur = mysql.connection.cursor()
+    resultValue = cur.execute("SELECT * FROM view_owners")
+    if resultValue > 0:
+        viewOwnersDetails = cur.fetchall()
+        return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
+
+        
+
+
+
+
 
 @app.route('/setDate')
 def setDate():
