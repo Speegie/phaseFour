@@ -35,33 +35,78 @@ def index():
 def users():
     cur = mysql.connection.cursor()
     resultValue = cur.execute("SELECT * FROM accounts")
-    print(resultValue)
     if resultValue > 0:
         userDetails = cur.fetchall()
         return render_template('users.html', userDetails=userDetails)
 
 
 
-
-@app.route('/viewAirlines')
-def viewAirlines():
-    cur = mysql.connection.cursor()
-    resultValue = cur.execute("SELECT * FROM view_airlines")
-    if resultValue > 0:
-        viewAirlineDetails = cur.fetchall()
-        return render_template('viewAirlines.html', viewAirlineDetails=viewAirlineDetails)
-
-@app.route('/viewOwners')
+@app.route('/viewOwners', methods=['GET', 'POST'])
 def viewOwners():
     cur = mysql.connection.cursor()
-    resultValue = cur.execute("SELECT * FROM view_owners")
-    if resultValue > 0:
+
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'sortOne':
+            resultValue = cur.execute("SELECT * FROM view_owners order by avg_rating desc")
+            viewOwnersDetails = cur.fetchall()
+            return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
+        if request.form['btn_identifier'] == 'sortTwo':
+            resultValue = cur.execute("SELECT * FROM view_owners order by num_properties_owned desc")
+            viewOwnersDetails = cur.fetchall()
+            return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
+        if request.form['btn_identifier'] == 'sortThree':
+            resultValue = cur.execute("SELECT * FROM view_owners order by avg_property_rating desc")
+            viewOwnersDetails = cur.fetchall()
+            return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
+        if request.form['btn_identifier'] == 'sortFour':
+            text = request.form['text']
+            print(text)
+            resultValue = cur.execute("SELECT * FROM view_owners where owner_name like '%" + text + "%'")
+            viewOwnersDetails = cur.fetchall()
+            return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM view_owners")
         viewOwnersDetails = cur.fetchall()
         return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
 
-        
 
+@app.route('/viewAirlines', methods=['GET', 'POST'])
+def viewAirlines():
+    
+    cur = mysql.connection.cursor()
 
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'sortOne':
+            resultValue = cur.execute("SELECT * FROM view_airlines order by rating desc")
+            viewAirlinesDetails = cur.fetchall()
+            return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
+        if request.form['btn_identifier'] == 'sortTwo':
+            resultValue = cur.execute("SELECT * FROM view_airlines order by total_flights desc")
+            viewAirlinesDetails = cur.fetchall()
+            return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
+        if request.form['btn_identifier'] == 'sortThree':
+            resultValue = cur.execute("SELECT * FROM view_airlines order by min_flight_cost desc")
+            viewAirlinesDetails = cur.fetchall()
+            return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
+        if request.form['btn_identifier'] == 'sortFour':
+            text = request.form['text']
+            resultValue = cur.execute("SELECT * FROM view_airlines   where airline_name like '%" + text + "%'")
+            viewAirlinesDetails = cur.fetchall()
+            return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM view_airlines")
+        viewAirlinesDetails = cur.fetchall()
+        return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
+    
+    
+    
+    #cur = mysql.connection.cursor()
+    #resultValue = cur.execute("SELECT * FROM view_airlines")
+    #if resultValue > 0:
+        #viewAirlineDetails = cur.fetchall()
+        #return render_template('viewAirlines.html', viewAirlineDetails=viewAirlineDetails)
 
 
 

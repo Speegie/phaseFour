@@ -1,32 +1,47 @@
-<table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Rating</th>
-        <th>Total Flights</th>
-        <th>Minimum Flight Cost</th>
-     </tr>
-    </thead>
-    <tbody>
+<body>
+    <h1>View Owners</h1>
 
-        +
+    <h3>Sort By:</h3>
+        <form method="POST">Name
+            <input name="text">
+            <input type="submit">
+            <input type="hidden" name="btn_identifier" value="sortFour" />
+            
+        </form>
 
-        {% for row in viewOwnersDetails %}
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortOne" />
+            <input type="submit" value="Avg Rating" >
+        </form>
+    
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortTwo" />
+            <input type="submit" value="Num Properties Rating" >
+        </form>
+    
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortThree" />
+            <input type="submit" value="Avg Property Rating"/>
+        </form>
+
+    <table>
+        <thead>
         <tr>
-            <td> {{row[0]}} </td>
-            <td> {{row[1]}} </td>
-            <td> {{row[2]}} </td>
-            <td> {{row[3]}} </td>
+            <th>Name</th>
+            <th>Avg Rating</th>
+            <th>Num Properties Owned</th>
+            <th>Average Property Rating</th>
         </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<div>
-    <label for="categorySelect">Show: </label>
-    <select class="custom-select" id="categorySelect" onchange="onCategoryChanged()">
-    <option selected value="all-letters">All Letters</option>
-    <option value="only-consonants">Only Consonants</option>
-    <option value="only-vowels">Only Vowels</option>
-    </select>
-</div>
+        </thead>
+        <tbody>
+            {% for row in viewOwnersDetails %}
+            <tr>
+                <td> {{row[0]}} </td>
+                <td> {{row[1]}} </td>
+                <td> {{row[2]}} </td>
+                <td> {{row[3]}} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
