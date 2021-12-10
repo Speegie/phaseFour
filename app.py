@@ -4,9 +4,10 @@ import yaml
 from datetime import date
 
 app = Flask(__name__)
+app.run(debug=True)
 
 # Configure db
-db = yaml.load(open('db.yaml'))
+db = yaml.safe_load(open('db.yaml'))
 app.config['MYSQL_HOST'] = db['mysql_host']
 app.config['MYSQL_USER'] = db['mysql_user']
 app.config['MYSQL_PASSWORD'] = db['mysql_password']
@@ -60,7 +61,6 @@ def viewOwners():
             return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
         if request.form['btn_identifier'] == 'sortFour':
             text = request.form['text']
-            print(text)
             resultValue = cur.execute("SELECT * FROM view_owners where owner_name like '%" + text + "%'")
             viewOwnersDetails = cur.fetchall()
             return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)

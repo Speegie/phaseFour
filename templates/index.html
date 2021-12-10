@@ -1,7 +1,22 @@
-<form method="POST" action="">
-    Name <input type="text" name="name" />
-    <br>
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>Travel Reservation Service</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+
+</head>
+<body>
+  <h1>Welcome to the Travel Reservation Service</h1>
+<form class= "table" method="POST" action="">
+  <div class = "fields">
+    Name 
+    <input type="text" name="name" />
+  </div class = "fields">
+  <div class = "fields">
     Email <input type="email" name="email" />
-    <br>
+  </div>
     <input type="submit">
   </form>
+</body>
