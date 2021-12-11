@@ -21,7 +21,6 @@ currentDate = date.today()
 def index():
     if request.method == 'POST':
         if request.form['reg'] == 'regUser':
-            print("hi")
             return redirect('/register')
         # Fetch form data
         userDetails = request.form
@@ -37,8 +36,63 @@ def index():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     return render_template('register.html')
-        
 
+
+@app.route('/adminHome', methods=['GET', 'POST'])
+def adminHome():
+    if request.method == 'POST':
+        if request.form['but'] == 'sched':
+            return redirect('/scheduleFlight')
+        if request.form['but'] == 'removeF':
+            return redirect('/removeFlight')
+        if request.form['but'] == 'processD':
+            return redirect('/processDate')
+        if request.form['but'] == 'viewAirports':
+            return redirect('/viewAirports')
+        if request.form['but'] == 'viewAirlines':
+            return redirect('/viewAirlines')
+        if request.form['but'] == 'viewC':
+            return redirect('/viewCustomers')
+        if request.form['but'] == 'viewO':
+            return redirect('/viewOwners')
+        if request.form['but'] == 'logout':
+            return redirect('/')
+    return render_template('adminHome.html') 
+
+@app.route('/scheduleFlight', methods=['GET', 'POST'])
+def scheduleFlight():
+    if request.method == 'POST':
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
+    return render_template('scheduleFlight.html')
+
+@app.route('/removeFlight', methods=['GET', 'POST'])
+def removeFlight():
+    if request.method == 'POST':
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
+    return render_template('removeFlight.html')
+
+@app.route('/processDate', methods=['GET', 'POST'])
+def processDate():
+    if request.method == 'POST':
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
+    return render_template('processDate.html')
+
+@app.route('/viewAirports', methods=['GET', 'POST'])
+def viewAirports():
+    if request.method == 'POST':
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
+    return render_template('viewAirports.html')
+
+@app.route('/viewCustomers', methods=['GET', 'POST'])
+def viewCustomers():
+    if request.method == 'POST':
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
+    return render_template('viewCustomers.html')
 
 @app.route('/users')
 def users():
@@ -72,6 +126,8 @@ def viewOwners():
             resultValue = cur.execute("SELECT * FROM view_owners where owner_name like '%" + text + "%'")
             viewOwnersDetails = cur.fetchall()
             return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
 
     if request.method == 'GET':
         resultValue = cur.execute("SELECT * FROM view_owners")
@@ -102,6 +158,8 @@ def viewAirlines():
             resultValue = cur.execute("SELECT * FROM view_airlines   where airline_name like '%" + text + "%'")
             viewAirlinesDetails = cur.fetchall()
             return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
+        if request.form['but'] == 'back':
+            return redirect('/adminHome')
 
     if request.method == 'GET':
         resultValue = cur.execute("SELECT * FROM view_airlines")
