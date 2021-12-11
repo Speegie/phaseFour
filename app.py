@@ -19,24 +19,54 @@ currentDate = date.today()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    cur = mysql.connection.cursor()
     if request.method == 'POST':
-        if request.form['reg'] == 'regUser':
+        if request.form['action'] == 'regUser':
             return redirect('/register')
         # Fetch form data
         userDetails = request.form
+
+        global name, email, status
+    
         name = userDetails['name']
         email = userDetails['email']
-        #cur = mysql.connection.cursor()
-        #cur.execute("INSERT INTO users(name, email) VALUES(%s, %s)",(name, email))
-        #mysql.connection.commit()
-        #cur.close()
-        return redirect('/users')
+        status = [0, 0, 0]
+
+        if request.form['action'] == 'loginUser':
+            result_value = cur.execute("select * from admins where email=%s", (email,))
+            if (result_value > 0):
+                status[0] = 1
+                print(status)
+                return redirect('/intermediate')
+            result_value = cur.execute("select * from customer where email=%s", (email,))
+            if (result_value > 0):
+                status[1] = 1
+                print(status)
+                return redirect('/intermediate')
+            result_value = cur.execute("select * from owners where email=%s", (email,))
+            if (result_value > 0):
+                status[2] = 1
+                print(status)
+                return redirect('/intermediate')
+
+        return redirect('/')
     return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     return render_template('register.html')
 
+@app.route('/intermediate', methods=['GET', 'POST'])
+def intermediate():
+    if request.method == 'POST':
+        if request.form['but'] == "admin":
+            return redirect('/adminHome')
+        if request.form['but'] == 'customer':
+            return redirect('/customerHome')
+        if request.form['but'] == 'owner':
+            return redirect('/ownerHome')
+    print(status)
+    return render_template('intermediate.html', status = status)
 
 @app.route('/adminHome', methods=['GET', 'POST'])
 def adminHome():

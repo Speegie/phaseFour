@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+
+</head>
+
+<body>
+    <h1>Home/Intermediate Page</h1>
+
+    <form method="POST">
+        {% if status[0] == 1 %}
+        <button id = "first" name="but" value="admin" type="submit">Admin Homepage</button>
+        {% endif %}
+        {% if status[1] == 1 %}
+        <button id = "second" name="but" value="customer" type="submit">Customer Homepage</button>
+        {% endif %}
+        {% if status[2] == 1 %}
+        <button id = "third" name="but" value="owner" type="submit">Owner Homepage</button>
+        {% endif %}
+    </form>
+</body>
