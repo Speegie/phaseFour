@@ -9,40 +9,51 @@
 </head>
 
 <body>
-    <h1>View Customers</h1>
+    <h1>View Flights</h1>
     <div class="table" style="border: black; border-width:1px; border-style: solid;">
         <h3>Sort By:</h3>
 
-        <form method="POST">Name
-            <input name="text">
+        <form method="POST">Available Seats (less than) :
+            <input name="text" type = "number">
             <input type="submit">
             <input type="hidden" name="btn_identifier" value="sortFour" />
 
         </form>
 
         <form method="POST">
+            <input class = "reset" type="hidden" name="btn_identifier" value="sortEight" />
+            <input class = "reset" type="submit" value="RESET SEAT FILTER">
+        </form>
+       
+
+        <form method="POST">
             <input type="hidden" name="btn_identifier" value="sortOne" />
-            <input type="submit" value="Name">
+            <input type="submit" value="ID">
         </form>
 
         <form method="POST">
             <input type="hidden" name="btn_identifier" value="sortTwo" />
-            <input type="submit" value="Average Rating">
+            <input type="submit" value="Airline">
         </form>
 
         <form method="POST">
             <input type="hidden" name="btn_identifier" value="sortThree" />
-            <input type="submit" value="Location" />
+            <input type="submit" value="Destination" />
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortFive" />
+            <input type="submit" value="Date" />
         </form>
 
         <form method="POST">
             <input type="hidden" name="btn_identifier" value="sortSix" />
-            <input type="submit" value="Is Owner" />
+            <input type="submit" value="Cost per Seat" />
         </form>
 
         <form method="POST">
             <input type="hidden" name="btn_identifier" value="sortSev" />
-            <input type="submit" value="Total Seats Purchased" />
+            <input type="submit" value="Total Spent" />
         </form>
 
      
@@ -52,22 +63,30 @@
         <table class="center">
             <thead>
                 <tr style="background-color: lightgray">
-                    <th>Name</th>
-                    <th>Average Rating</th>
-                    <th>Location</th>
-                    <th>Is Owner</th>
-                    <th>Total Seats Purchased</th>
+                    <th>ID</th>
+                    <th>Airline</th>
+                    <th>Destination</th>
+                    <th>Date</th>
+                    <th>Available Seats</th>
+                    <th>Cost per Seat</th>
+                    <th>Total Spent</th>
+
+
+
 
                 </tr>
             </thead>
             <tbody>
-                {% for row in viewCustDetails %}
+                {% for row in viewFlightDetails %}
                 <tr>
                     <td> {{row[0]}} </td>
-                    <td> {{row[1]}} </td>
                     <td> {{row[2]}} </td>
                     <td> {{row[3]}} </td>
+                    <td> {{row[1]}} </td>
+                    <td> {{row[5]}} </td>
                     <td> {{row[4]}} </td>
+                    <td> {{row[6]}} </td>
+
 
                 </tr>
                 {% endfor %}
