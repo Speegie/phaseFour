@@ -82,10 +82,50 @@ def processDate():
 
 @app.route('/viewAirports', methods=['GET', 'POST'])
 def viewAirports():
+    cur = mysql.connection.cursor()
+
     if request.method == 'POST':
-        if request.form['but'] == 'back':
+        if request.form['btn_identifier'] == 'sortOne':
+            resultValue = cur.execute("SELECT * FROM view_airports order by Airport_Id asc")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'sortTwo':
+            resultValue = cur.execute("SELECT * FROM view_airports order by Airport_Name asc")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'sortThree':
+            resultValue = cur.execute("SELECT * FROM view_airports order by Time_Zone asc")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'sortFour':
+            text = request.form['text']
+            resultValue = cur.execute("SELECT * FROM view_airports where Airport_Name like '%" + text + "%'")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'sortFive':
+            time = request.form.get('time')
+            resultValue = cur.execute("SELECT * FROM view_airports where time_zone = '" + time + "'")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'back':
             return redirect('/adminHome')
-    return render_template('viewAirports.html')
+        if request.form['btn_identifier'] == 'sortSix':
+            resultValue = cur.execute("SELECT * FROM view_airports order by total_arriving_flights desc")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'sortSev':
+            resultValue = cur.execute("SELECT * FROM view_airports order by total_departing_flights desc")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+        if request.form['btn_identifier'] == 'sortEight':
+            resultValue = cur.execute("SELECT * FROM view_airports order by avg_departing_flight_cost desc")
+            viewAirportDetails = cur.fetchall()
+            return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM view_airports")
+        viewAirportDetails = cur.fetchall()
+        return render_template('viewAirports.html', viewAirportDetails=viewAirportDetails)
 
 @app.route('/viewCustomers', methods=['GET', 'POST'])
 def viewCustomers():
@@ -127,7 +167,6 @@ def viewOwners():
             viewOwnersDetails = cur.fetchall()
             return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
         if request.form['btn_identifier'] == 'back':
-            #return render_template('index.html')
             return redirect('/adminHome')
 
     if request.method == 'GET':

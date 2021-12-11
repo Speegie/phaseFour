@@ -1,16 +1,104 @@
 <!DOCTYPE HTML>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
 
-  <title>Travel Reservation Service</title>
-  <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
 
 </head>
+
 <body>
     <h1>View Airports</h1>
-    <form method="POST">
-        <button class = "but" name = "but" value = "back" type= "submit">Back to Home</button>
-    </form>
+    <div class="table" style="border: black; border-width:1px; border-style: solid;">
+        <h3>Sort By:</h3>
+
+        <form method="POST">ID
+            <input name="text">
+            <input type="submit">
+            <input type="hidden" name="btn_identifier" value="sortFour" />
+
+        </form>
+
+        <form method="POST">
+            <label for="timezone">Timezone: </label>
+            <select id="timezone" name="time">
+                <option value="AST">Atlantic Standard Time</option>
+                <option value="EST">Eastern Standard Time</option>
+                <option value="CST">Central Standard Time</option>
+                <option value="PST">Pacific Standard Time</option>
+                <option value="AKST">Alaskan Standard Time</option>
+                <option value="HST">Hawaii-Aleutian Standard Time</option>
+            </select>
+            <input type="submit">
+            <input type="hidden" name="btn_identifier" value="sortFive" />
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortOne" />
+            <input type="submit" value="ID">
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortTwo" />
+            <input type="submit" value="Name">
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortThree" />
+            <input type="submit" value="Time Zone" />
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortSix" />
+            <input type="submit" value="Total Arriving Flights" />
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortSev" />
+            <input type="submit" value="Total Departing Flights" />
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortEight" />
+            <input type="submit" value="Average Departing Flight Cost" />
+        </form>
+
+    </div>
+    <div class="data">
+        <table class="center">
+            <thead>
+                <tr style="background-color: lightgray">
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Timezone</th>
+                    <th>Total Arriving Flights</th>
+                    <th>Total Departing Flights</th>
+                    <th>Average Departing Flight Cost</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in viewAirportDetails %}
+                <tr>
+                    <td> {{row[0]}} </td>
+                    <td> {{row[1]}} </td>
+                    <td> {{row[2]}} </td>
+                    <td> {{row[3]}} </td>
+                    <td> {{row[4]}} </td>
+                    <td> {{row[5]}} </td>
+
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <form method="POST">
+            <input type="hidden" class="but" name="btn_identifier" value="back" />
+            <button class="but" name="but" value="back" type="submit">Back to Home</button>
+        </form>
+    </div>
 
 </body>
