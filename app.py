@@ -4,7 +4,7 @@ import yaml
 from datetime import date
 
 app = Flask(__name__)
-app.run(debug=True)
+#app.run()
 
 # Configure db
 db = yaml.safe_load(open('db.yaml'))
@@ -126,7 +126,8 @@ def viewOwners():
             resultValue = cur.execute("SELECT * FROM view_owners where owner_name like '%" + text + "%'")
             viewOwnersDetails = cur.fetchall()
             return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
-        if request.form['but'] == 'back':
+        if request.form['btn_identifier'] == 'back':
+            #return render_template('index.html')
             return redirect('/adminHome')
 
     if request.method == 'GET':
@@ -158,7 +159,8 @@ def viewAirlines():
             resultValue = cur.execute("SELECT * FROM view_airlines   where airline_name like '%" + text + "%'")
             viewAirlinesDetails = cur.fetchall()
             return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
-        if request.form['but'] == 'back':
+        if request.form['btn_identifier'] == 'back':
+            #return render_template('index.html')
             return redirect('/adminHome')
 
     if request.method == 'GET':
