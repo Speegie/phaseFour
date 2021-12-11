@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <h1>Owner Add Property</h1>
+
+    <form method="POST" action="">
+        <div class = "fields">
+            Name: 
+            <input required type="text" name="name" />
+        </div >
+
+        <div class = "fields">
+            Email: 
+            <input required type="text" name="email" />
+        </div >
+
+        <div class = "fields">
+            Description: 
+            <input required type="text" name="description" />
+        </div >
+
+        <div class = "fields">
+            Street: 
+            <input required type="text" name="street" />
+        </div >
+
+        <div class = "fields">
+            City:
+            <input required type="text" name="city" />
+        </div >
+
+        <div class = "fields">
+            State:
+            <input required type="text" name="state" />
+        </div >
+
+        <div class = "fields">
+            Zip:
+            <input required type="number" name="zip" />
+        </div >
+
+        <div class = "fields">
+            Nearest Airport:
+            <input type="text" name="nearestAirport" />
+        </div >
+
+        <div class = "fields">
+            Dist to Airport:
+            <input type="number" name="distToAirport" />
+        </div >
+
+        <div class = "fields">
+            Capacity:
+            <input required type="number" name="capacity" />
+        </div >
+
+        <div class = "fields">
+            Cost:
+            <input required type="number" "step = 0.01" name="cost" />
+        </div >
+
+        <input type="hidden" class = "but" name="btn_identifier" value="add" />
+        <button class = "but" name = "but" value = "add" type= "submit">Add</button>
+    </form>
+
+    <form method="POST" action="">
+        <input type="hidden" class = "but" name="btn_identifier" value="cancel" />
+        <button class = "but" name = "but" value = "cancel" type= "submit">Cancel</button>
+    </form>
+
+    <!-- <form method="POST">
+        
+    </form>
+
+    <form method="POST">
+        
+    </form> -->
+</body>

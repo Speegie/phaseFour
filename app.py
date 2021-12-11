@@ -4,7 +4,7 @@ import yaml
 from datetime import date
 
 app = Flask(__name__)
-#app.run()
+app.run()
 
 # Configure db
 db = yaml.safe_load(open('db.yaml'))
@@ -204,6 +204,34 @@ def viewOwners():
         viewOwnersDetails = cur.fetchall()
         return render_template('viewOwners.html', viewOwnersDetails=viewOwnersDetails)
 
+@app.route('/ownerAddProperty', methods = ['GET', 'POST'])
+def ownerAddProperty():
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'cancel':
+            return redirect('/')
+            #Change this when we have owner
+        if request.form['btn_identifier'] == 'add':            
+            ownerInput = request.form
+
+            name = ownerInput['name']
+            email = ownerInput['email']
+            description = ownerInput['description']
+            street = ownerInput['street']
+            city = ownerInput['city']
+            state = ownerInput['state']
+            zip = ownerInput['zip']
+            nearestAirport = ownerInput['nearestAirport']
+            distToAirport = ownerInput['distToAirport']
+            capacity = ownerInput['capacity']
+            cost = ownerInput['cost']
+
+            cur = mysql.connection.cursor()
+            cur.execute("call add_property('{}', '{}', '{}', {}, {}, '{}', '{}', '{}', '{}', '{}', {});".format
+            (name, email, description, capacity, cost, street, city, state, zip, nearestAirport, distToAirport))
+            mysql.connection.commit()
+
+    return render_template('ownerAddProperty.html')
+
 
 @app.route('/viewAirlines', methods=['GET', 'POST'])
 def viewAirlines():
@@ -237,15 +265,6 @@ def viewAirlines():
         viewAirlinesDetails = cur.fetchall()
         return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
     
-    
-    
-    #cur = mysql.connection.cursor()
-    #resultValue = cur.execute("SELECT * FROM view_airlines")
-    #if resultValue > 0:
-        #viewAirlineDetails = cur.fetchall()
-        #return render_template('viewAirlines.html', viewAirlineDetails=viewAirlineDetails)
-
-
 
 @app.route('/setDate')
 def setDate():
