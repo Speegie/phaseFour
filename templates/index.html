@@ -13,16 +13,18 @@
   <h3>Login</h3>
   <div class = "fields">
     Name 
-    <input type="text" name="name" />
-  </div class = "fields">
+    <input required type="text" name="name" />
+  </div >
   <div class = "fields">
-    Email <input type="email" name="email" />
+    Email <input required type="email" name="email" />
   </div>
     <input type="submit">
   </form>
 
   <div>
     <h4>Not signed up?</h4>
-    <button type= "button">Register</button>
+    <form method="POST" action="">
+    <button name = "reg" value = "regUser" type= "submit">Register</button>
+    </form>
   </div>
 </body>

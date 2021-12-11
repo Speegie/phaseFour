@@ -20,6 +20,9 @@ currentDate = date.today()
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        if request.form['reg'] == 'regUser':
+            print("hi")
+            return redirect('/register')
         # Fetch form data
         userDetails = request.form
         name = userDetails['name']
@@ -30,6 +33,11 @@ def index():
         #cur.close()
         return redirect('/users')
     return render_template('index.html')
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    return render_template('register.html')
+        
 
 
 @app.route('/users')
