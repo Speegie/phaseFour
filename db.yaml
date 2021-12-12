@@ -1,4 +1,5 @@
 mysql_host: 'localhost'
 mysql_user: 'root'
 mysql_password: 'password'
+
 mysql_db: 'travel_reservation_service'

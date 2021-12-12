@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect
-from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL, MySQLdb
 import yaml
 from datetime import date
+import re
 
 app = Flask(__name__)
 app.run()
@@ -16,6 +17,10 @@ app.config['MYSQL_DB'] = db['mysql_db']
 mysql = MySQL(app)
 
 currentDate = date.today()
+
+#cdemilio@tiktok.com
+#Charlie Demilio
+name, email, status = 'Addison Ray', 'aray@tiktok.com', None
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -391,7 +396,106 @@ def viewAirlines():
         resultValue = cur.execute("SELECT * FROM view_airlines")
         viewAirlinesDetails = cur.fetchall()
         return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
-    
+
+@app.route('/bookFlight', methods=['GET', 'POST'])
+def bookFlight():
+    cur = mysql.connection.cursor()
+    # cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    # conn = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor)
+    # cur = conn.cursor()
+    if request.method == 'POST':
+        
+
+        
+        if request.form['btn_identifier'] == 'sortByAirline':
+            resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight order by airline')
+            bookFlightDetails = cur.fetchall()
+            return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
+        
+        if request.form['btn_identifier'] == 'sortByFlightNum':
+            resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight order by CAST(flight_id as UNSIGNED) asc')
+            bookFlightDetails = cur.fetchall()
+            return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
+
+        if request.form['btn_identifier'] == 'submitFlight':
+            selectedRow = request.form.get('radio_identifier')
+            selectedRow = selectedRow.split(", ")
+            numSeatsArr = request.form.getlist('txt_identifier')
+            #print(selectedRow)
+            airline = selectedRow[0][2:-2]
+            flight_id = selectedRow[1][1:-1]
+            numSeats = 0
+
+            for ns in numSeatsArr:
+                if ns != '0':
+                    numSeats = int(ns)
+
+            cur.execute("call book_flight('{}','{}','{}','{}','{}');".format(email, flight_id, airline, numSeats, currentDate))
+            resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight order by airline')
+            bookFlightDetails = cur.fetchall()
+            return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
+
+    if request.method == 'GET':
+        resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight')
+        bookFlightDetails = cur.fetchall()
+        return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
+
+    # resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight')
+    # bookFlightDetails = cur.fetchall()
+    # return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
+    #cur = mysql.connection.cursor()
+    #resultValue = cur.execute("SELECT * FROM view_airlines")
+    #if resultValue > 0:
+        #viewAirlineDetails = cur.fetchall()
+        #return render_template('viewAirlines.html', viewAirlineDetails=viewAirlineDetails)
+
+@app.route('/cancelFlight', methods=['GET', 'POST'])
+def cancelFlight():
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'sortByAirline':
+            resultValue = cur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer = '{}' order by Airline_name".format(email) )
+            cancelFlightDetails = cur.fetchall()
+            return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+        
+        if request.form['btn_identifier'] == 'sortByFlightNum':
+            resultValue = cur.executecur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer = '{}' order by CAST(flight_num as UNSIGNED) asc".format(email) )
+            cancelFlightDetails = cur.fetchall()
+            return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+
+        if request.form['btn_identifier'] == 'searchFlight':
+            # print(request.form.get('txt_airline'))
+            # print(request.form.get('txt_flightNumber'))
+            airline = request.form.get('txt_airline')
+            flight_num = request.form.get('txt_flightNumber')
+            if (airline and flight_num) is not None:
+                resultValue = cur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer='{}' AND Airline_Name='{}' AND Flight_Num='{}'".format(email, airline, flight_num))
+                cancelFlightDetails = cur.fetchall()
+                return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+            else:
+                resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = ' + "'" + email + "'")
+                cancelFlightDetails = cur.fetchall()
+            return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+
+        if request.form['btn_identifier'] =="submitCancelFlight":
+            # print(request.form.get('radio_identifier'))
+            selectedRow = request.form.get('radio_identifier')
+            selectedRow = selectedRow.split(", ")
+            airline = selectedRow[0][2:-1]
+            flight_num = selectedRow[1][1:-2]
+            # print(airline, flight_num)
+            # print(("call cancel_flight_booking('{}','{}','{}','{}');".format(email, flight_num, airline, currentDate)))
+            resultValue = cur.execute("call cancel_flight_booking('{}','{}','{}','{}');".format(email, flight_num, airline, currentDate))
+
+            resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = ' + "'" + email + "'")
+            cancelFlightDetails = cur.fetchall()
+            return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+    if request.method == 'GET':
+        print(email)
+        resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = ' + "'" + email + "'")
+        cancelFlightDetails = cur.fetchall()
+        return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+
 
 @app.route('/setDate')
 def setDate():
