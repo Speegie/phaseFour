@@ -242,6 +242,54 @@ def viewFlights():
         return render_template('viewFlights.html', viewFlightDetails=viewFlightDetails)
 
 
+@app.route('/viewProperties', methods=['GET', 'POST'])
+def viewProperties():
+    cur = mysql.connection.cursor()
+   
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'sortOne':
+            resultValue = cur.execute("SELECT * FROM view_properties order by property_name asc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sortTwo':
+            resultValue = cur.execute("SELECT * FROM view_properties order by address asc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+        if (request.form['btn_identifier'] == 'sortFour'):
+            text1 = request.form['text']
+            text2 = request.form.get('text2')
+            resultValue = cur.execute("SELECT * FROM view_properties where capacity > " + (text1) + " and capacity < " + text2 )
+
+            viewPropDetails = cur.fetchall()            
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2)
+       
+        if request.form['btn_identifier'] == 'sortEight':
+            text1 = 0
+            text2 = "infinity"
+            resultValue = cur.execute("SELECT * FROM view_properties where capacity < 100000" )
+            viewPropDetails = cur.fetchall()
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2)
+        if request.form['btn_identifier'] == 'sortFive':
+            resultValue = cur.execute("SELECT * FROM view_properties order by average_rating_score desc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sortSix':
+            resultValue = cur.execute("SELECT * FROM view_properties order by capacity desc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sortSev':
+            resultValue = cur.execute("SELECT * FROM view_properties order by cost_per_night desc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/adminHome')
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM view_properties")
+        viewPropDetails = cur.fetchall()
+        return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+
+
 
 @app.route('/users')
 def users():
