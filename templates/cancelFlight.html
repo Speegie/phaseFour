@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+ </head>
+ <body>
+    <h1>Cancel Flight</h1>
+    <div class="inputFlield" style="border: black; border-width:1px; border-style: solid;">
+    	<h3>Sort By:</h3>
+    	<form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortByAirline" />
+            <input type="submit" value="Airline">
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortByFlightNum" />
+            <input type="submit" value="Flight Num">
+        </form>
+        <h3>Input: </h3>
+        <form method="POST" action="cancelFlight">
+        	Airline<input type='text' name='txt_airline'>
+        	Flight Number<input type='text' name='txt_flightNumber'>
+        	<input type="hidden" name="btn_identifier" value="searchFlight" />
+        	<input type='submit' value='search'>
+        </form>
+        <!-- </form> -->
+    </div>
+    <form method="POST" action="/cancelFlight">
+
+        <table class="center">
+                <!-- <thead> -->
+                    <tr style="background-color: lightgray">
+                        <th>Airline</th>
+                        <th>Flight Num</th>
+                        <!-- <th>Date</th> -->
+                    </tr>
+                <!-- </thead> -->
+                <!-- <tbody> -->
+                    {% for row in cancelFlightDetails %}
+                    <tr id='{{row}}'>
+                        <td> {{row[0]}} </td>
+                        <td> {{row[1]}} </td>
+                        <!-- <td> {{row[2]}} </td> -->
+                        <td> <input type='radio' name='radio_identifier' value='{{row}}' />
+                        </td>
+                    </tr>
+                    {% endfor %}
+                <!-- </tbody> -->
+            </table>
+            <input type="hidden" name="btn_identifier" value="submitCancelFlight" />
+        	<input type='submit'>
+        <!-- <input type='submit'> -->
+   </form> 
+   <div>
+        <form method="POST">
+            <input type="hidden" class="but" name="btn_identifier" value="back" />
+            <button class="but" name="but" value="back" type="submit">Back to Home</button>
+        </form>
+    </div> 
+</body>
+</html>
