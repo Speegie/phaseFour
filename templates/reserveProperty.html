@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+ </head>
+ <body>
+ 	<h1>Reserve Property</h1>
+    <div class="inputFlield" style="border: black; border-width:1px; border-style: solid;">
+    	<h3>Sort By:</h3>
+    	<form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortByName" />
+            <input type="submit" value="Property Name">
+        </form>
+
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortByEmail" />
+            <input type="submit" value="Owner Email">
+        </form>
+        <form method="POST">
+            <input type="hidden" name="btn_identifier" value="sortByCapacity" />
+            <input type="submit" value="Capacity">
+        </form>
+        <h3>Input: </h3>
+        <form method="POST" action="/reserveProperty">
+        	Dates: <input required type='text' name='txt_sDate'> - <input required type='text' name='txt_eDate'>
+        	Current Date: <input type='text' id='curDate' readonly>
+        	<script>
+        		n = new Date();
+        		y = n.getFullYear();
+        		m = n.getMonth() + 1;
+        		d = n.getDate();
+        		document.getElementById("curDate").value = y+"-"+m+"-"+d;
+        	</script>
+        	<input type="hidden" name="btn_identifier" value="searchProperty" />
+        	<input type='submit' value='search'>
+        <!-- </form> -->
+
+        <!-- <form method="POST" action="/reserveProperty"> -->
+
+        <table class="center">
+                <!-- <thead> -->
+                    <tr style="background-color: lightgray">
+                        <th>Property Name</th>
+                        <th>Owner Email</th>
+                        <th>Capacity</th>
+                        <th>Number of Guests</th>
+                        <th></th>
+                        <!-- <th>Date</th> -->
+                    </tr>
+                <!-- </thead> -->
+                <!-- <tbody> -->
+                    {% for row in reservePropertyDetails %}
+                    <tr id='{{row}}'>
+                        <td> {{row[0]}} </td>
+                        <td> {{row[1]}} </td>
+                        <td> {{row[2]}} </td>
+                        <td> <input type='text' name='txt_identifier' value='0'/> </td>
+                        <!-- <td> {{row[2]}} </td> -->
+                        <td> <input type='radio' name='radio_identifier' value='{{row}}' />
+                        </td>
+                    </tr>
+                    {% endfor %}
+                <!-- </tbody> -->
+            </table>
+            <input type="hidden" name="btn_identifier" value="submitReserve" />
+        	<input type='submit'>
+        <!-- <input type='submit'> -->
+   </form>  
+ </body>
+ </html>
