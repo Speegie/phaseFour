@@ -121,7 +121,7 @@ def intermediate():
         if request.form['but'] == "admin":
             return redirect('/adminHome')
         if request.form['but'] == 'customer':
-            return redirect('/customerHome')
+            return redirect('/custHome')
         if request.form['but'] == 'owner':
             return redirect('/ownerHome')
     print(status)
@@ -612,7 +612,8 @@ def viewIProperties():
             return redirect('/custHome')
 
     if request.method == 'GET':
-        resultValue = cur.execute("SELECT * FROM view_individual_property_reservations")
+        resultValue = cur.execute("call view_individual_property_reservations('{}', '{}');".format(name, email))
+        mysql.connection.commit()
         viewPropDetails = cur.fetchall()
         return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
 
