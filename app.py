@@ -577,51 +577,26 @@ def viewIProperties():
     cur = mysql.connection.cursor()
    
     if request.method == 'POST':
-        if request.form['btn_identifier'] == 'sortOne':
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by property_name asc")
-            viewPropDetails = cur.fetchall()
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
-        if request.form['btn_identifier'] == 'sortTwo':
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by start_date asc")
-            viewPropDetails = cur.fetchall()
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
-        if (request.form['btn_identifier'] == 'prop'):
-            text1 = request.form.get('text')
-           
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations where property_name like '%" + (text1) + "'%" )
-
-            viewPropDetails = cur.fetchall()            
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+       
         if (request.form['btn_identifier'] == 'ownEmail'):
             text1 = request.form.get('text')
-           
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations where "+ ownerEmail +" like '%" + (text1) + "'%" )
-
-            viewPropDetails = cur.fetchall()            
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
-       
-        if request.form['btn_identifier'] == 'sortEight':
+            text2 = request.form.get('text2')
             
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations" )
+           
+            cur.execute("call view_individual_property_reservations('{}', '{}');".format(str(text2), str(text1)))
+            mysql.connection.commit()
+
+            resultVal = cur.execute("SELECT * from view_individual_property_reservations;")
+
             viewPropDetails = cur.fetchall()
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
-        if request.form['btn_identifier'] == 'sort5':
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by rating_score desc")
-            viewPropDetails = cur.fetchall()
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
-        if request.form['btn_identifier'] == 'sort4':
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by total_booking_cost desc")
-            viewPropDetails = cur.fetchall()
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
-        if request.form['btn_identifier'] == 'sort3':
-            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by customer_email asc")
-            viewPropDetails = cur.fetchall()
-            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2)
+       
+       
         if request.form['btn_identifier'] == 'back':
             return redirect('/custHome')
 
     if request.method == 'GET':
-        resultValue = cur.execute("call view_individual_property_reservations('{}', '{}');".format(name, email))
+        resultValue = cur.execute("call view_individual_property_reservations('{}', '{}');".format("*", "*"))
         mysql.connection.commit()
         viewPropDetails = cur.fetchall()
         return render_template('viewIProp.html', viewPropDetails=viewPropDetails)

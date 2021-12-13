@@ -13,52 +13,27 @@
     <div class="table" style="border: black; border-width:1px; border-style: solid;">
         <h3>Sort By:</h3>
 
-        <form method="POST">Owner Email:
+        <form method="POST">
+            <div>
+            <label>Owner Email:</label>
             <input name="text">
+        </div><div>
+            <label>Property Name:</label>
+            <input name="text2">-
+        </div>
             <input type="submit">
             <input type="hidden" name="btn_identifier" value="ownEmail" />
 
         </form>
 
-        <form method="POST">Property:
-            <input name="text">-
-            <input type="submit">
-            <input type="hidden" name="btn_identifier" value="prop" />
-
-        </form>
-
-        
-       
-
-        <form method="POST">
-            <input type="hidden" name="btn_identifier" value="sortOne" />
-            <input type="submit" value="Name">
-        </form>
-
-        <form method="POST">
-            <input type="hidden" name="btn_identifier" value="sortTwo" />
-            <input type="submit" value="Start Date">
-        </form>
-
-        <form method="POST">
-            <input type="hidden" name="btn_identifier" value="sort3" />
-            <input type="submit" value="Customer" />
-        </form>
-
-        <form method="POST">
-            <input type="hidden" name="btn_identifier" value="sort4" />
-            <input type="submit" value="Cost" />
-        </form>
-
-        <form method="POST">
-            <input type="hidden" name="btn_identifier" value="sort5" />
-            <input type="submit" value="Rating" />
-        </form>
-
-        <form method="POST">
-            <input class = "reset" type="hidden" name="btn_identifier" value="sortEight" />
-            <input class = "reset" type="submit" value="RESET">
-        </form>
+        <text>
+            <div>
+                <h4>Filtering by...</h4>
+            </div>
+            <div>Owner Email: {{text1}}</div>
+            <div>Property Name: {{text2}}</div>
+        </text>
+      
 
      
 
@@ -71,7 +46,7 @@
                     <th>Start Date</th>
                     <th>End Date</th>
                     <th>Customer Email</th>
-                    <th>Customer Phonoe Number</th>
+                    <th>Customer Phone Number</th>
                     <th>Total Booking Cost</th>
                     <th>Rating</th>
                     <th>Review</th>
