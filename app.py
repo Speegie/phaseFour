@@ -148,6 +148,47 @@ def adminHome():
             return redirect('/')
     return render_template('adminHome.html') 
 
+@app.route('/ownerHome', methods=['GET', 'POST'])
+def ownerHome():
+    if request.method == 'POST':
+        if request.form['but'] == 'add':
+            return redirect('/ownerAddProperty')
+        if request.form['but'] == 'remove':
+            return redirect('/ownerRemoveProperty')
+        if request.form['but'] == 'rate':
+            return redirect('/ownerRateCustomer')
+        if request.form['but'] == 'delete':
+            return redirect('/deleteOwnerAccount')
+       
+        if request.form['but'] == 'logout':
+            return redirect('/')
+    return render_template('ownerHome.html') 
+
+@app.route('/custHome', methods=['GET', 'POST'])
+def custHome():
+    if request.method == 'POST':
+        if request.form['but'] == '1':
+            return redirect('/bookFlight')
+        if request.form['but'] == '2':
+            return redirect('/cancelFlight')
+        if request.form['but'] == '3':
+            return redirect('/viewProperties')
+        if request.form['but'] == '4':
+            return redirect('/reserveProperty')
+        if request.form['but'] == '5':
+            return redirect('/cancelProperty')
+        if request.form['but'] == '6':
+            return redirect('/reviewProperty')
+        if request.form['but'] == '7':
+            return redirect('/viewProperties')
+        if request.form['but'] == '8':
+            return redirect('/customerRateOwner')
+        
+       
+        if request.form['but'] == 'logout':
+            return redirect('/')
+    return render_template('custHome.html') 
+
 @app.route('/scheduleFlight', methods=['GET', 'POST'])
 def scheduleFlight():
     cur = mysql.connection.cursor()
@@ -515,14 +556,65 @@ def viewProperties():
             viewPropDetails = cur.fetchall()
             return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
         if request.form['btn_identifier'] == 'back':
-            return redirect('/adminHome')
+            return redirect('/custHome')
 
     if request.method == 'GET':
         resultValue = cur.execute("SELECT * FROM view_properties")
         viewPropDetails = cur.fetchall()
         return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
 
+@app.route('/viewIndividualProperties', methods=['GET', 'POST'])
+def viewIProperties():
+    cur = mysql.connection.cursor()
+   
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'sortOne':
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by property_name asc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sortTwo':
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by start_date asc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if (request.form['btn_identifier'] == 'prop'):
+            text1 = request.form.get('text')
+           
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations where property_name like '%" + (text1) + "'%" )
 
+            viewPropDetails = cur.fetchall()            
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if (request.form['btn_identifier'] == 'ownEmail'):
+            text1 = request.form.get('text')
+           
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations where "+ ownerEmail +" like '%" + (text1) + "'%" )
+
+            viewPropDetails = cur.fetchall()            
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+       
+        if request.form['btn_identifier'] == 'sortEight':
+            
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations" )
+            viewPropDetails = cur.fetchall()
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sort5':
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by rating_score desc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sort4':
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by total_booking_cost desc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'sort3':
+            resultValue = cur.execute("SELECT * FROM view_individual_property_reservations order by customer_email asc")
+            viewPropDetails = cur.fetchall()
+            return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/custHome')
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM view_individual_property_reservations")
+        viewPropDetails = cur.fetchall()
+        return render_template('viewIProp.html', viewPropDetails=viewPropDetails)
 
 @app.route('/users')
 def users():
@@ -568,7 +660,7 @@ def viewOwners():
 def ownerAddProperty():
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'cancel':
-            return redirect('/')
+            return redirect('/ownerHome')
             #Change this when we have owner
         if request.form['btn_identifier'] == 'add':            
             ownerInput = request.form
@@ -597,7 +689,7 @@ def ownerAddProperty():
 def ownerRemoveProperty():
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'back':
-            return redirect('/')
+            return redirect('/ownerHome')
             #Change this when we have owner
         if request.form['btn_identifier'] == 'removeProperty':            
             selectedRow = request.form.get('radio_identifier')
@@ -628,7 +720,7 @@ def ownerRemoveProperty():
 def ownerRateCustomer():
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'back':
-            return redirect('/')
+            return redirect('/ownerHome')
             #Change this when we have owner
         if request.form['btn_identifier'] == 'submit':
             cur = mysql.connection.cursor()
@@ -661,7 +753,7 @@ def deleteOwnerAccount():
     if request.method == 'POST':
         ownerEmail = "jwayne@gmail.com"
         if request.form['btn_identifier'] == 'back':
-            return redirect('/')
+            return redirect('/ownerHome')
             #Change when have owner home
         if request.form['btn_identifier'] == 'logOut':
             email = ""
@@ -744,7 +836,7 @@ def bookFlight():
             return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
 
         if request.form['but'] == 'back':
-            return redirect('/customerHome')
+            return redirect('/custHome')
 
     if request.method == 'GET':
         resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight')
@@ -793,7 +885,7 @@ def cancelFlight():
             return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
 
         if request.form['but'] == 'back':
-            return redirect('/customerHome')
+            return redirect('/custHome')
 
     if request.method == 'GET':
         resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = "{}" and Was_Cancelled=0'.format(email))
@@ -849,7 +941,7 @@ def reserveProperty():
             return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
         
         if request.form['but'] == 'back':
-            return redirect('/customerHome')
+            return redirect('/custHome')
 
     if request.method == 'GET':
         resultValue = cur.execute('SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property\
@@ -876,7 +968,7 @@ def cancelProperty():
             return render_template('cancelProperty.html', cancelPropertyDetails=cancelPropertyDetails)
         
         if request.form['but'] == 'back':
-            return redirect('/customerHome')
+            return redirect('/custHome')
 
     if request.method == 'GET':
         resultValue = cur.execute("SELECT reserve.Start_Date, reserve.Property_Name, reserve.Owner_Email, concat(Street, City, State, Zip)\
@@ -888,7 +980,7 @@ def cancelProperty():
 def reviewProperty():
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'back':
-            return redirect('/')
+            return redirect('/custHome')
             #Change this when we have owner
         if request.form['btn_identifier'] == 'submit':
             cur = mysql.connection.cursor()
@@ -922,7 +1014,7 @@ def reviewProperty():
 def customerRateOwner():
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'back':
-            return redirect('/')
+            return redirect('/custHome')
             #Change this when we have owner
         if request.form['btn_identifier'] == 'submit':
             cur = mysql.connection.cursor()
