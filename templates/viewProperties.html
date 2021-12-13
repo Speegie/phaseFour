@@ -89,11 +89,23 @@
             </tbody>
         </table>
     </div>
+    
+
+    {% if status[2] == 1 %}
+    <div>
+        <form method="POST">
+            <input type="hidden" class="but" name="btn_identifier" value="own" />
+            <button class="but" name="but" value="back" type="submit">Back to Owner Home Page</button>
+        </form>
+    </div>
+    {% endif %}
+    {% if status[1] == 1 %}
     <div>
         <form method="POST">
             <input type="hidden" class="but" name="btn_identifier" value="back" />
-            <button class="but" name="but" value="back" type="submit">Back to Home</button>
+            <button class="but" name="but" value="back" type="submit">Back to Customer Home</button>
         </form>
     </div>
+    {% endif %}
 
 </body>

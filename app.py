@@ -164,6 +164,8 @@ def ownerHome():
             return redirect('/ownerRateCustomer')
         if request.form['but'] == 'delete':
             return redirect('/deleteOwnerAccount')
+        if request.form['but'] == 'prop':
+            return redirect('/viewProperties')
        
         if request.form['but'] == 'logout':
             name = ""
@@ -521,11 +523,11 @@ def viewProperties():
         if request.form['btn_identifier'] == 'sortOne':
             resultValue = cur.execute("SELECT * FROM view_properties order by property_name asc")
             viewPropDetails = cur.fetchall()
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, status = status)
         if request.form['btn_identifier'] == 'sortTwo':
             resultValue = cur.execute("SELECT * FROM view_properties order by address asc")
             viewPropDetails = cur.fetchall()
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, status = status)
         if (request.form['btn_identifier'] == 'sortFour'):
             text1 = request.form.get('text')
             text2 = request.form.get('text2')
@@ -538,33 +540,35 @@ def viewProperties():
             resultValue = cur.execute("SELECT * FROM view_properties where capacity > " + (text1) + " and capacity < " + text2 )
 
             viewPropDetails = cur.fetchall()            
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2, status = status)
        
         if request.form['btn_identifier'] == 'sortEight':
             text1 = 0
             text2 = "infinity"
             resultValue = cur.execute("SELECT * FROM view_properties where capacity < 100000" )
             viewPropDetails = cur.fetchall()
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, text1=text1, text2=text2, status = status)
         if request.form['btn_identifier'] == 'sortFive':
             resultValue = cur.execute("SELECT * FROM view_properties order by average_rating_score desc")
             viewPropDetails = cur.fetchall()
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, status = status)
         if request.form['btn_identifier'] == 'sortSix':
             resultValue = cur.execute("SELECT * FROM view_properties order by capacity desc")
             viewPropDetails = cur.fetchall()
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, status = status)
         if request.form['btn_identifier'] == 'sortSev':
             resultValue = cur.execute("SELECT * FROM view_properties order by cost_per_night desc")
             viewPropDetails = cur.fetchall()
-            return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+            return render_template('viewProperties.html', viewPropDetails=viewPropDetails, status = status)
         if request.form['btn_identifier'] == 'back':
             return redirect('/custHome')
+        if request.form['btn_identifier'] == 'own':
+            return redirect('/ownerHome')
 
     if request.method == 'GET':
         resultValue = cur.execute("SELECT * FROM view_properties")
         viewPropDetails = cur.fetchall()
-        return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
+        return render_template('viewProperties.html', viewPropDetails=viewPropDetails, status = status)
 
 @app.route('/viewIndividualProperties', methods=['GET', 'POST'])
 def viewIProperties():
