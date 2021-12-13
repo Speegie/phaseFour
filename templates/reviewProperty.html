@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <h1>Customer Review Property</h1>
+
+    <form method="POST" action="">
+        <table class="center">
+            <thead>
+                <tr style="background-color: lightgray">
+                    <th>Reservation Date</th>
+                    <th>Property Name</th>
+                    <th>Owner Email</th>
+                    <th>Address</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in reviewDetails %}
+                <tr>
+                    <td> {{row[0]}} </td>
+                    <td> {{row[1]}} </td>
+                    <td> {{row[2]}} </td>
+                    <td> {{row[3]}} </td>
+                    <td> <input type='radio' name='radio_identifier' value={{row[4]}}></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+
+        <label for="content">Description: </label>
+        <input type="text" id="content" name="content"><br>
+
+        <br>
+
+        <label for="score">Score: </label>
+        <input type="number" id="score" name="score"><br>
+
+        <input type="hidden" class="but" name="btn_identifier" value="submit" />
+        <button class="but" name="but" value="submit" type="submit">Submit</button>
+    </form>
+
+    <form method="POST" action="">
+        <input type="hidden" class="but" name="btn_identifier" value="back" />
+        <button class="but" name="but" value="cancel" type="submit">Back</button>
+    </form>
+</body>
+
+<br>
+
+<!-- <div class = "data">
+        <table class="center" >
+                <thead>
+                    <tr style="background-color: lightgray">
+                        <th>Property Name</th>
+                        <th>Owner Email</th>
+                        <th>Customer</th>
+                        <th>Content</th>
+                        <th>Score</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in review %}
+                    <tr>
+                        <td> {{row[0]}} </td>
+                        <td> {{row[1]}} </td>
+                        <td> {{row[2]}} </td>
+                        <td> {{row[3]}} </td>
+                        <td> {{row[4]}} </td>
+                        <td> {{row[5]}} </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </div> -->
+</body>

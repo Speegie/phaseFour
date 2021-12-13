@@ -672,42 +672,37 @@ def cancelProperty():
 
 @app.route('/reviewProperty', methods=['GET', 'POST'])
 def reviewProperty():
-    cur = mysql.connection.cursor()
-    resultValue = cur.execute("SELECT start_date, reserve.property_name, reserve.owner_email, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address FROM reserve LEFT JOIN property ON reserve.property_name = property.property_name")
-    properties = cur.fetchall()
-
     if request.method == 'POST':
-        if request.form['btn_identifier'] == 'cancel':
+        if request.form['btn_identifier'] == 'back':
             return redirect('/')
-            #Change this when we have customer home
-        if request.form['btn_identifier'] == 'review':      
+            #Change this when we have owner
+        if request.form['btn_identifier'] == 'submit':
+            cur = mysql.connection.cursor()
+            customerEmail = "aray@tiktok.com"
+            cur.execute("SELECT start_date, reserve.property_name, reserve.owner_email, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address FROM reserve LEFT JOIN property ON reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
+            reviewDetails = cur.fetchall()
 
-            selectedRow = request.form.get('radio_identifier')
-            selectedRow = selectedRow.split(", ")
-            property_name = selectedRow[1][1:-1]
-            owner_email = selectedRow[2][1:-1]
+            details = request.form
 
-            customer_email = email
+            description = details['content']
+            score = details['score']
 
-            ownerInput = request.form
+            newInput = request.form.getlist('radio_identifier')
+            for i in range(len(newInput)):
+                if newInput[i] != 'None':
+                    cur.execute("call customer_review_property('{}', '{}', '{}', '{}', '{}', '{}');".format(reviewDetails[i][1], reviewDetails[i][2], customerEmail, description, score, currentDate))
+                    mysql.connection.commit()
 
-            description = ownerInput['description']
-            score = ownerInput['score']
+            cur.execute("SELECT start_date, reserve.property_name, reserve.owner_email, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address FROM reserve LEFT JOIN property ON reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
+            ratingDetails = cur.fetchall()
+            return render_template('reviewProperty.html', reviewDetails = reviewDetails)
 
-            print("property_name: ", property_name)
-            print("description: ", description)
-            print("customer_email: ", customer_email)
-            print("owner_email: ", owner_email)
-            print("score: ", score)
-
-            cur.execute("call customer_review_property('{}', '{}', '{}', '{}', '{}', '{}');".format
-                (property_name, owner_email, customer_email, description, score, currentDate))
-            mysql.connection.commit()
-
-    resultValue = cur.execute("SELECT * FROM review")
-    review = cur.fetchall()
-
-    return render_template('reviewProperty.html', properties=properties, review=review)
+    if request.method == 'GET':
+        customerEmail = "aray@tiktok.com"
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT start_date, reserve.property_name, reserve.owner_email, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address FROM reserve LEFT JOIN property ON reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
+        reviewDetails = cur.fetchall()
+        return render_template('reviewProperty.html', reviewDetails = reviewDetails)
 
 @app.route('/customerRateOwner', methods = ['GET', 'POST'])
 def customerRateOwner():
@@ -725,7 +720,7 @@ def customerRateOwner():
             for i in range(len(newInput)):
                 if newInput[i] != 'None':
                     newInput[i] = int(newInput[i])
-                    cur.execute("call owner_rates_customer('{}', '{}', {}, '{}');".format(customerEmail, ratingDetails[i][1], newInput[i], currentDate))
+                    cur.execute("call customer_rates_owner('{}', '{}', {}, '{}');".format(customerEmail, ratingDetails[i][1], newInput[i], currentDate))
                     mysql.connection.commit()
 
             cur.execute("SELECT start_date as 'Reservation Date', property.owner_email, property.property_name, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address from property LEFT JOIN reserve on reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
