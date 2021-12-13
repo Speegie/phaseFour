@@ -16,11 +16,12 @@ app.config['MYSQL_DB'] = db['mysql_db']
 
 mysql = MySQL(app)
 
-currentDate = date.today()
-
 #cdemilio@tiktok.com
 #Charlie Demilio
 name, email, status = 'Addison Ray', 'aray@tiktok.com', None
+
+global tempDate
+tempDate = ""
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -108,12 +109,21 @@ def removeFlight():
             return redirect('/adminHome')
     return render_template('removeFlight.html')
 
-@app.route('/processDate', methods=['GET', 'POST'])
+@app.route('/adminProcessDate', methods=['GET', 'POST'])
 def processDate():
     if request.method == 'POST':
-        if request.form['but'] == 'back':
+        if request.form['btn_identifier'] == 'back':
             return redirect('/adminHome')
-    return render_template('processDate.html')
+        if request.form['btn_identifier'] == 'setDate':
+            userDetails = request.form
+            setCurrentDate(userDetails['date'])
+            return render_template('adminProcessDate.html')
+    print(tempDate)
+    return render_template('adminProcessDate.html')
+
+def setCurrentDate(dateInput):
+    global tempDate
+    tempDate = dateInput
 
 @app.route('/viewAirports', methods=['GET', 'POST'])
 def viewAirports():
@@ -363,6 +373,93 @@ def ownerAddProperty():
             mysql.connection.commit()
 
     return render_template('ownerAddProperty.html')
+
+#Needs to be fixed a lot with email and current date
+@app.route('/ownerRemoveProperty', methods = ['GET', 'POST'])
+def ownerRemoveProperty():
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/')
+            #Change this when we have owner
+        if request.form['btn_identifier'] == 'removeProperty':            
+            selectedRow = request.form.get('radio_identifier')
+            
+            selectedRow = selectedRow.split(", ")
+            name = selectedRow[0][2:-1]
+            email = "arthurread@gmail.com"
+            currentDate = "2021-10-15"
+            cur = mysql.connection.cursor()
+            cur.execute("call remove_property('{}', '{}', '{}');".format(name, email, currentDate))
+            mysql.connection.commit()
+
+            ownerEmail = "arthurread@gmail.com"
+            cur = mysql.connection.cursor()
+            cur.execute("SELECT Property_Name, Descr, Capacity, Cost, (SELECT CONCAT(Street, ', ', City, ', ', State, ' ', Zip)) as Address FROM property where Owner_Email like '%" + ownerEmail + "%'")
+            viewPropertyDetails = cur.fetchall()
+            return render_template('ownerRemoveProperty.html', viewPropertyDetails = viewPropertyDetails)
+
+    if request.method == 'GET':
+        ownerEmail = "arthurread@gmail.com"
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT Property_Name, Descr, Capacity, Cost, (SELECT CONCAT(Street, ', ', City, ', ', State, ' ', Zip)) as Address FROM property where Owner_Email like '%" + ownerEmail + "%'")
+        viewPropertyDetails = cur.fetchall()
+        return render_template('ownerRemoveProperty.html', viewPropertyDetails = viewPropertyDetails)
+
+
+@app.route('/ownerRateCustomer', methods = ['GET', 'POST'])
+def ownerRateCustomer():
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/')
+            #Change this when we have owner
+        if request.form['btn_identifier'] == 'submit':
+            cur = mysql.connection.cursor()
+            ownerEmail = "cbing10@gmail.com"
+            cur.execute("select Start_Date, cEmail, pName, Address, Score from owners_rate_customers right join (select pName, oEmail, cEmail, Start_Date, (SELECT CONCAT(Street, ', ', City, ', ', State, ' ', Zip)) as Address from property right join (select Property_Name as pName, Owner_Email as oEmail, Customer as cEmail, Start_Date, End_Date from reserve where Owner_Email = '" + ownerEmail + "') as outerOne on Owner_Email = oEmail and Property_Name = pName where oEmail = '" + ownerEmail + "') as outerTwo on Customer = cEmail;")
+            ratingDetails = cur.fetchall()
+
+            newInput = request.form.getlist('txt_identifier')
+            for i in range(len(newInput)):
+                if newInput[i] != 'None' and int(newInput[i]) != ratingDetails[i][4]:
+                    newInput[i] = int(newInput[i])
+                    cur.execute("call owner_rates_customer('{}', '{}', {}, '{}');".format(ownerEmail, ratingDetails[i][1], newInput[i], currentDate))
+                    mysql.connection.commit()
+
+            cur.execute("select Start_Date, cEmail, pName, Address, Score from owners_rate_customers right join (select pName, oEmail, cEmail, Start_Date, (SELECT CONCAT(Street, ', ', City, ', ', State, ' ', Zip)) as Address from property right join (select Property_Name as pName, Owner_Email as oEmail, Customer as cEmail, Start_Date, End_Date from reserve where Owner_Email = '" + ownerEmail + "') as outerOne on Owner_Email = oEmail and Property_Name = pName where oEmail = '" + ownerEmail + "') as outerTwo on Customer = cEmail;")
+            ratingDetails = cur.fetchall()
+            return render_template('ownerRateCustomer.html', ratingDetails = ratingDetails)
+
+    if request.method == 'GET':
+        ownerEmail = "cbing10@gmail.com"
+        cur = mysql.connection.cursor()
+        cur.execute("select Start_Date, cEmail, pName, Address, Score from owners_rate_customers right join (select pName, oEmail, cEmail, Start_Date, (SELECT CONCAT(Street, ', ', City, ', ', State, ' ', Zip)) as Address from property right join (select Property_Name as pName, Owner_Email as oEmail, Customer as cEmail, Start_Date, End_Date from reserve where Owner_Email = '" + ownerEmail + "') as outerOne on Owner_Email = oEmail and Property_Name = pName where oEmail = '" + ownerEmail + "') as outerTwo on Customer = cEmail;")
+        ratingDetails = cur.fetchall()
+        return render_template('ownerRateCustomer.html', ratingDetails = ratingDetails)
+
+
+
+@app.route('/deleteOwnerAccount', methods = ['GET', 'POST'])
+def deleteOwnerAccount():
+    if request.method == 'POST':
+        ownerEmail = "jwayne@gmail.com"
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/')
+            #Change when have owner home
+        if request.form['btn_identifier'] == 'logOut':
+            email = ""
+            return redirect('/')
+        if request.form['btn_identifier'] == 'deleteAccount':
+            cur = mysql.connection.cursor()
+            cur.execute("call remove_owner('" + ownerEmail + "');")#.format(ownerEmail))
+            print("Done")
+            mysql.connection.commit()
+            return render_template('deleteOwnerAccount.html')
+        #Test if this works!!!!
+    if request.method == 'GET':
+        return render_template('deleteOwnerAccount.html')
+    
+
+
 
 
 @app.route('/viewAirlines', methods=['GET', 'POST'])

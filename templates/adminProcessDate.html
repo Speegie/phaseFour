@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <h1>Admin Process Date</h1>
+        
+    <form method="POST" action="">
+        <div class = "fields">
+            Set Current System Date:
+            <input required type="text" name="date" placeholder = "MM/DD/YYYY"/>
+        </div >
+
+        <input type="hidden" class = "but" name="btn_identifier" value="setDate" />
+        <button class = "but" name = "but" value = "setDate" type= "submit">Set Date</button>
+    </form>
+
+    <form method="POST" action="">
+        <input type="hidden" class = "but" name="btn_identifier" value="back" />
+        <button class = "but" name = "but" value = "Back" type= "submit">Back</button>
+    </form>
+</body>
