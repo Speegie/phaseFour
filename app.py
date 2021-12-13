@@ -86,6 +86,7 @@ def registerOwner():
 
             if (password == confirm):
                 cur.execute("call register_owner('{}', '{}', '{}', '{}', '{}');".format(email, fname, lname, password, phone))
+                mysql.connection.commit()
 
     return render_template('registerOwner.html')
 
@@ -111,6 +112,7 @@ def registerCustomer():
 
             if (password == confirm):
                 cur.execute("call register_owner('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(email, fname, lname, password, phone, card, cvv, exp))
+                mysql.connection.commit()
             
         return redirect("/registerCustomer")
 
