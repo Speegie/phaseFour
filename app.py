@@ -15,12 +15,7 @@ app.config['MYSQL_DB'] = db['mysql_db']
 
 mysql = MySQL(app)
 
-#cdemilio@tiktok.com
-#Charlie Demilio
-name, email, status = 'Addison Ray', 'aray@tiktok.com', None
-
-global currentDate
-currentDate = ""
+name, email, status, currentDate = '', '', None, '2021-10-15'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -31,7 +26,7 @@ def index():
         # Fetch form data
         userDetails = request.form
 
-        global name, email, status
+        global name, email, status, currentDate
     
         name = userDetails['name']
         email = userDetails['email']
@@ -130,7 +125,6 @@ def intermediate():
             return redirect('/custHome')
         if request.form['but'] == 'owner':
             return redirect('/ownerHome')
-    print(status)
     return render_template('intermediate.html', status = status)
 
 @app.route('/adminHome', methods=['GET', 'POST'])
@@ -208,7 +202,7 @@ def custHome():
 def scheduleFlight():
     cur = mysql.connection.cursor()
 
-    currDate = date.today()
+    currDate = currentDate
 
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'sortOne':
@@ -240,8 +234,6 @@ def scheduleFlight():
                 currDate))
             
             mysql.connection.commit()
-            
-            # viewAirportDetails = cur.fetchall()
             
             return render_template('scheduleFlight.html', num=num, dateStr=dateStr, airline=airline, cost=cost, fromA=fromA, toA=toA, capacity=capacity
                 ,depTime=depTime, arrTime=arrTime, currDate=currDate)
@@ -278,7 +270,7 @@ def error():
 def removeFlight():
     cur = mysql.connection.cursor()
 
-    currDate = date.today()
+    currDate = currentDate
 
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'sortOne':
@@ -313,7 +305,6 @@ def removeFlight():
         
         if (request.form['btn_identifier'] == 'sortLine'):
             aline = request.form.get('line')
-            print(aline)
             
             resultValue = cur.execute("SELECT * FROM Flight where Airline_Name = '" + (aline) + "'")
 
@@ -369,7 +360,6 @@ def removeFlight():
     if request.method == 'GET':
         resultValue = cur.execute("SELECT * FROM Flight")
         viewFDetails = cur.fetchall()
-        print(viewFDetails)
         return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
     return render_template('removeFlight.html', currDate = currDate)
 
@@ -745,7 +735,6 @@ def deleteOwnerAccount():
         if request.form['btn_identifier'] == 'deleteAccount':
             cur = mysql.connection.cursor()
             cur.execute("call remove_owner('" + ownerEmail + "');")#.format(ownerEmail))
-            print("Done")
             mysql.connection.commit()
             return render_template('deleteOwnerAccount.html')
         #Test if this works!!!!
@@ -904,6 +893,8 @@ def reserveProperty():
             return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
 
         if request.form['btn_identifier'] == 'submitReserve':
+            sDate = request.form.get('txt_sDate')
+            eDate = request.form.get('txt_eDate')
             selectedRow = request.form.get('radio_identifier')
             selectedRow = selectedRow.split(", ")
             numGuestArr = request.form.getlist('txt_identifier')
