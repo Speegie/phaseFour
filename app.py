@@ -203,15 +203,15 @@ def custHome():
 @app.route('/scheduleFlight', methods=['GET', 'POST'])
 def scheduleFlight():
     cur = mysql.connection.cursor()
-
+    
     currDate = currentDate
+    currDateDate = datetime.strptime(currDate, '%Y-%m-%d').date()
 
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'sortOne':
             num = request.form.get('num')
             dateStr = request.form.get('date')
             date1 = datetime.strptime(dateStr, '%Y-%m-%d').date()
-
             airline = request.form.get('line')
             cost = request.form.get('cost')
             fromA = request.form.get('from')
@@ -220,7 +220,7 @@ def scheduleFlight():
             depTime = request.form.get('deptime')
             arrTime = request.form.get('arrtime')
        
-            if (currDate > date1):
+            if (currDateDate > date1):
                 return redirect('/error')
             
             resultVal = cur.execute("call schedule_flight('{}', '{}', '{}', '{}', '{}', '{}', '{}', {}, {}, '{}');".format
@@ -233,7 +233,7 @@ def scheduleFlight():
                 date1,
                 cost,
                 capacity,
-                currDate))
+                currDateDate))
             
             mysql.connection.commit()
             
