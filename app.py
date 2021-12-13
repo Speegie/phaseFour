@@ -5,7 +5,7 @@ from datetime import date
 import re
 
 app = Flask(__name__)
-app.run()
+#app.run()
 
 # Configure db
 db = yaml.safe_load(open('db.yaml'))
@@ -20,8 +20,8 @@ mysql = MySQL(app)
 #Charlie Demilio
 name, email, status = 'Addison Ray', 'aray@tiktok.com', None
 
-global tempDate
-tempDate = ""
+global currentDate
+currentDate = ""
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -118,12 +118,11 @@ def processDate():
             userDetails = request.form
             setCurrentDate(userDetails['date'])
             return render_template('adminProcessDate.html')
-    print(tempDate)
     return render_template('adminProcessDate.html')
 
 def setCurrentDate(dateInput):
-    global tempDate
-    tempDate = dateInput
+    global currentDate
+    currentDate = dateInput
 
 @app.route('/viewAirports', methods=['GET', 'POST'])
 def viewAirports():
