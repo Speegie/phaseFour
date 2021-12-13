@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <h1>Owner Remove Property</h1>
+    
+    <form method="POST" action="">
+        <table class = "center">
+            <thead>
+                <tr style="background-color: lightgray">
+                    <th>Property Name</th>
+                    <th>Description</th>
+                    <th>Capacity</th>
+                    <th>Cost</th>
+                    <th>Address</th>
+                    <th>Select</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in viewPropertyDetails %}
+                <tr>
+                    <td> {{row[0]}} </td>
+                    <td> {{row[1]}} </td>
+                    <td> {{row[2]}} </td>
+                    <td> {{row[3]}} </td>
+                    <td> {{row[4]}} </td>
+                    <td> <input type='radio' name='radio_identifier' value='{{row}}' /></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <input type="hidden" class = "but" name="btn_identifier" value="removeProperty" />
+        <button class = "but" name = "but" value = "add" type= "submit">Remove Property</button>
+    </form>
+
+    <form method="POST" action="">
+        <input type="hidden" class = "but" name="btn_identifier" value="back" />
+        <button class = "but" name = "but" value = "cancel" type= "submit">Back</button>
+    </form>
+</body>

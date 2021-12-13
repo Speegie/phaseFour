@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>Travel Reservation Service</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+
+</head>
+
+<body>
+  <h1>REGISTER OWNER</h1>
+  <form method="POST">
+    <form>
+      <label for="fname">First name: </label>
+      <input type="text" id="fname" name="fname"><br>
+
+      <label for="lname">Last name: </label>
+      <input type="text" id="lname" name="lname"><br>
+
+      <label for="email">Email: </label>
+      <input type="text" id="email" name="email"><br>
+
+      <label for="password">Password: </label>
+      <input type="text" id="password" name="password"><br>
+
+      <label for="confirm">Confirm Password: </label>
+      <input type="text" id="confirm" name="confirm"><br>
+
+      <label for="phone">Phone Number: </label>
+      <input type="text" id="phone" name="phone"><br>
+    </form>
+
+    <br>
+
+    <form method="POST">
+      <button name="action" value="register" type="submit">Submit</button>
+      <button name="action" value="back" type="submit">Back to Home</button>
+    </form>
+    
+  </form>
+
+</body>

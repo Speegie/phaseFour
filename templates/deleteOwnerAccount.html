@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Travel Reservation Service</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+
+<body>
+    <h1>Delete Owner Account</h1>
+    <h3>Are you sure you want to delete your Owner account?</h3>
+
+    <form method="POST" action="">
+        <input type="hidden" class = "but" name="btn_identifier" value="deleteAccount" />
+        <button class = "but" name = "but" value = "deleteAccount" type= "submit">Delete Account</button>
+    </form>
+
+    <form method="POST" action="">
+        <input type="hidden" class = "but" name="btn_identifier" value="back" />
+        <button class = "but" name = "but" value = "bacl" type= "submit">Back</button>
+    </form>
+
+    <form method="POST" action="">
+        <input type="hidden" class = "but" name="btn_identifier" value="logOut" />
+        <button class = "but" name = "but" value = "logOut" type= "submit">Log Out</button>
+    </form>
+</body>

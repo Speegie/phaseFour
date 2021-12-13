@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -7,10 +8,12 @@
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
 
 </head>
-<body>
-    <h1>Process Date</h1>
-    <form method="POST">
-        <button class = "but" name = "but" value = "back" type= "submit">Back to Home</button>
-    </form>
 
+<body>
+    <h1>Choose What to Register</h1>
+
+    <form method="POST">
+        <button id = "first" name="but" value="customer" type="submit">Register Customer</button>
+        <button id = "second" name="but" value="owner" type="submit">Register Owner</button>
+    </form>
 </body>
