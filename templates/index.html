@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -7,24 +8,25 @@
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
 
 </head>
+
 <body>
   <h1>Welcome to the Travel Reservation Service</h1>
-  <form class= "table" method="POST" action="">
+  <form class="table" method="POST" action="">
     <h3>Login</h3>
-    <div class = "fields">
-      Name 
+    <div class="fields">
+      Name
       <input required type="text" name="name" />
-    </div >
-    <div class = "fields">
+    </div>
+    <div class="fields">
       Email <input required type="email" name="email" />
     </div>
-      <button name = "action" value = "loginUser" type= "submit">Login</button>
+    <button name="action" value="loginUser" type="submit">Login</button>
   </form>
 
   <div>
     <h4>Not signed up?</h4>
     <form method="POST" action="">
-    <button name = "action" value = "regUser" type= "submit">Register</button>
+      <button name="action" value="regUser" type="submit">Register</button>
     </form>
   </div>
 </body>

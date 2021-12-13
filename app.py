@@ -5,7 +5,6 @@ from datetime import date, datetime
 import re
 
 app = Flask(__name__)
-#app.run()
 
 # Configure db
 db = yaml.safe_load(open('db.yaml'))
@@ -38,21 +37,26 @@ def index():
         email = userDetails['email']
         status = [0, 0, 0]
 
+        toRedirect = False
+
         if request.form['action'] == 'loginUser':
             result_value = cur.execute("select * from admins where email=%s", (email,))
             if (result_value > 0):
                 status[0] = 1
                 print(status)
-                return redirect('/intermediate')
+                toRedirect = True
             result_value = cur.execute("select * from customer where email=%s", (email,))
             if (result_value > 0):
                 status[1] = 1
                 print(status)
-                return redirect('/intermediate')
+                toRedirect = True
             result_value = cur.execute("select * from owners where email=%s", (email,))
             if (result_value > 0):
                 status[2] = 1
                 print(status)
+                toRedirect = True
+
+            if toRedirect:
                 return redirect('/intermediate')
 
         return redirect('/')
@@ -112,6 +116,8 @@ def registerCustomer():
 
             if (password == confirm):
                 cur.execute("call register_owner('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(email, fname, lname, password, phone, card, cvv, exp))
+            
+        return redirect("/registerCustomer")
 
     return render_template('registerCustomer.html')
 
@@ -204,7 +210,6 @@ def scheduleFlight():
 
     currDate = date.today()
 
-
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'sortOne':
             num = request.form.get('num')
@@ -269,14 +274,11 @@ def error():
             return redirect('/scheduleFlight')
     return render_template('error.html')
 
-
-
 @app.route('/removeFlight', methods=['GET', 'POST'])
 def removeFlight():
     cur = mysql.connection.cursor()
 
     currDate = date.today()
-
 
     if request.method == 'POST':
         if request.form['btn_identifier'] == 'sortOne':
@@ -966,7 +968,7 @@ def reviewProperty():
             #Change this when we have owner
         if request.form['btn_identifier'] == 'submit':
             cur = mysql.connection.cursor()
-            customerEmail = "aray@tiktok.com"
+            customerEmail = email
             cur.execute("SELECT start_date, reserve.property_name, reserve.owner_email, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address FROM reserve LEFT JOIN property ON reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
             reviewDetails = cur.fetchall()
 
@@ -986,7 +988,7 @@ def reviewProperty():
             return render_template('reviewProperty.html', reviewDetails = reviewDetails)
 
     if request.method == 'GET':
-        customerEmail = "aray@tiktok.com"
+        customerEmail = email
         cur = mysql.connection.cursor()
         cur.execute("SELECT start_date, reserve.property_name, reserve.owner_email, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address FROM reserve LEFT JOIN property ON reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
         reviewDetails = cur.fetchall()
@@ -1000,7 +1002,7 @@ def customerRateOwner():
             #Change this when we have owner
         if request.form['btn_identifier'] == 'submit':
             cur = mysql.connection.cursor()
-            customerEmail = "cbing10@gmail.com"
+            customerEmail = email
             cur.execute("SELECT start_date as 'Reservation Date', property.owner_email, property.property_name, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address from property LEFT JOIN reserve on reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
             ratingDetails = cur.fetchall()
 
@@ -1016,7 +1018,7 @@ def customerRateOwner():
             return render_template('customerRateOwner.html', ratingDetails = ratingDetails)
 
     if request.method == 'GET':
-        customerEmail = "cbing10@gmail.com"
+        customerEmail = email
         cur = mysql.connection.cursor()
         cur.execute("SELECT start_date as 'Reservation Date', property.owner_email, property.property_name, CONCAT(street, ', ', city, ', ', state, ' ', zip) as address from property LEFT JOIN reserve on reserve.property_name = property.property_name where customer = '" + customerEmail + "'")
         ratingDetails = cur.fetchall()
