@@ -486,7 +486,6 @@ def viewAirlines():
             viewAirlinesDetails = cur.fetchall()
             return render_template('viewAirlines.html', viewAirlinesDetails=viewAirlinesDetails)
         if request.form['btn_identifier'] == 'back':
-            #return render_template('index.html')
             return redirect('/adminHome')
 
     if request.method == 'GET':
@@ -497,13 +496,8 @@ def viewAirlines():
 @app.route('/bookFlight', methods=['GET', 'POST'])
 def bookFlight():
     cur = mysql.connection.cursor()
-    # cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    # conn = MySQLdb.connect(cursorclass=MySQLdb.cursors.DictCursor)
-    # cur = conn.cursor()
     if request.method == 'POST':
-        
-
-        
+    
         if request.form['btn_identifier'] == 'sortByAirline':
             resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight order by airline')
             bookFlightDetails = cur.fetchall()
@@ -518,7 +512,6 @@ def bookFlight():
             selectedRow = request.form.get('radio_identifier')
             selectedRow = selectedRow.split(", ")
             numSeatsArr = request.form.getlist('txt_identifier')
-            #print(selectedRow)
             airline = selectedRow[0][2:-2]
             flight_id = selectedRow[1][1:-1]
             numSeats = 0
@@ -528,23 +521,18 @@ def bookFlight():
                     numSeats = int(ns)
 
             cur.execute("call book_flight('{}','{}','{}','{}','{}');".format(email, flight_id, airline, numSeats, currentDate))
+            mysql.connection.commit()
             resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight order by airline')
             bookFlightDetails = cur.fetchall()
             return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
+
+        if request.form['but'] == 'back':
+            return redirect('/customerHome')
 
     if request.method == 'GET':
         resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight')
         bookFlightDetails = cur.fetchall()
         return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
-
-    # resultValue = cur.execute('SELECT Airline, flight_id, num_empty_seats FROM view_flight')
-    # bookFlightDetails = cur.fetchall()
-    # return render_template('bookFlight.html', bookFlightDetails=bookFlightDetails)
-    #cur = mysql.connection.cursor()
-    #resultValue = cur.execute("SELECT * FROM view_airlines")
-    #if resultValue > 0:
-        #viewAirlineDetails = cur.fetchall()
-        #return render_template('viewAirlines.html', viewAirlineDetails=viewAirlineDetails)
 
 @app.route('/cancelFlight', methods=['GET', 'POST'])
 def cancelFlight():
@@ -556,43 +544,128 @@ def cancelFlight():
             return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
         
         if request.form['btn_identifier'] == 'sortByFlightNum':
-            resultValue = cur.executecur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer = '{}' order by CAST(flight_num as UNSIGNED) asc".format(email) )
+            resultValue = cur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer = '{}' order by CAST(flight_num as UNSIGNED) asc".format(email) )
             cancelFlightDetails = cur.fetchall()
             return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
 
         if request.form['btn_identifier'] == 'searchFlight':
-            # print(request.form.get('txt_airline'))
-            # print(request.form.get('txt_flightNumber'))
             airline = request.form.get('txt_airline')
             flight_num = request.form.get('txt_flightNumber')
-            if (airline and flight_num) is not None:
-                resultValue = cur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer='{}' AND Airline_Name='{}' AND Flight_Num='{}'".format(email, airline, flight_num))
+            if (airline) != "":
+                resultValue = cur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer='{}' AND Airline_Name like '%{}%'".format(email, airline))
+                cancelFlightDetails = cur.fetchall()
+                return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+            elif flight_num != "":
+                resultValue = cur.execute("SELECT Airline_Name, Flight_Num FROM book where Customer='{}' AND Flight_Num ='{}'".format(email, flight_num))
                 cancelFlightDetails = cur.fetchall()
                 return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
             else:
                 resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = ' + "'" + email + "'")
                 cancelFlightDetails = cur.fetchall()
-            return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+                return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
 
         if request.form['btn_identifier'] =="submitCancelFlight":
-            # print(request.form.get('radio_identifier'))
             selectedRow = request.form.get('radio_identifier')
             selectedRow = selectedRow.split(", ")
             airline = selectedRow[0][2:-1]
             flight_num = selectedRow[1][1:-2]
-            # print(airline, flight_num)
-            # print(("call cancel_flight_booking('{}','{}','{}','{}');".format(email, flight_num, airline, currentDate)))
             resultValue = cur.execute("call cancel_flight_booking('{}','{}','{}','{}');".format(email, flight_num, airline, currentDate))
-
-            resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = ' + "'" + email + "'")
+            mysql.connection.commit()
+            resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = "{}" and Was_Cancelled=0'.format(email))
             cancelFlightDetails = cur.fetchall()
             return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
+
+        if request.form['but'] == 'back':
+            return redirect('/customerHome')
+
     if request.method == 'GET':
-        print(email)
-        resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = ' + "'" + email + "'")
+        resultValue = cur.execute('SELECT Airline_Name, Flight_Num FROM book where Customer = "{}" and Was_Cancelled=0'.format(email))
         cancelFlightDetails = cur.fetchall()
         return render_template('cancelFlight.html', cancelFlightDetails=cancelFlightDetails)
 
+@app.route('/reserveProperty', methods=['GET', 'POST'])
+def reserveProperty():
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'sortByName':
+            resultValue = cur.execute('SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property order by reserve.Property_Name')
+            reservePropertyDetails = cur.fetchall()
+            return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
+        
+        if request.form['btn_identifier'] == 'sortByEmail':
+            resultValue = cur.execute('SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property order by reserve.Owner_Email')
+            reservePropertyDetails = cur.fetchall()
+            return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
+
+        if request.form['btn_identifier'] == 'sortByCapacity':
+            resultValue = cur.execute('SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property order by Capacity')
+            reservePropertyDetails = cur.fetchall()
+            return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
+        
+        if request.form['btn_identifier'] == 'searchProperty':
+            sDate = request.form.get('txt_sDate')
+            eDate = request.form.get('txt_eDate')
+            resultValue = cur.execute("SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property \
+                where ('{}' < Start_Date and '{}' < Start_Date) or  ('{}' > End_Date and '{}' < Start_Date)".format(sDate, eDate, sDate, eDate))
+            reservePropertyDetails = cur.fetchall()
+            return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
+
+        if request.form['btn_identifier'] == 'submitReserve':
+            selectedRow = request.form.get('radio_identifier')
+            selectedRow = selectedRow.split(", ")
+            numGuestArr = request.form.getlist('txt_identifier')
+            propertyName = selectedRow[0][2:-1]
+            ownerEmail = selectedRow[1][1:-1]
+            numGuest = 0
+
+            for ng in numGuestArr:
+                if ng != '0':
+                    numGuest = int(ng)
+
+            cur.execute("call reserve_property('{}','{}','{}','{}','{}','{}','{}');"\
+                .format(propertyName, ownerEmail, email, sDate, eDate, numGuest, currentDate))
+            mysql.connection.commit()
+           
+            resultValue = cur.execute('SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property\
+                where reserve.Start_Date > "{}"'.format(currentDate))
+            reservePropertyDetails = cur.fetchall()
+            return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
+        
+        if request.form['but'] == 'back':
+            return redirect('/customerHome')
+
+    if request.method == 'GET':
+        resultValue = cur.execute('SELECT (reserve.Property_Name), (reserve.Owner_Email), Capacity from reserve natural join property\
+            where reserve.Start_Date > "{}"'.format(currentDate))
+        reservePropertyDetails = cur.fetchall()
+        return render_template('reserveProperty.html', reservePropertyDetails=reservePropertyDetails)
+
+@app.route('/cancelProperty',  methods=['GET', 'POST'])
+def cancelProperty():
+    cur = mysql.connection.cursor()
+    if request.method == 'POST':
+        
+        if request.form['btn_identifier'] == 'cancelProperty':
+            selectedRow = request.form.get('radio_identifier')
+            selectedRow = selectedRow.split(", ")
+            propertyName = selectedRow[3][1:-1]
+            ownerEmail = selectedRow[4][1:-1]
+            cur.execute("call cancel_property_reservation('{}','{}','{}','{}');"\
+                .format(propertyName, ownerEmail, email, currentDate))
+            mysql.connection.commit()
+            resultValue = cur.execute("SELECT reserve.Start_Date, reserve.Property_Name, reserve.Owner_Email, concat(Street, City, State, Zip)\
+            from reserve natural join property where Customer='{}' and Was_Cancelled=0;".format(email))
+            cancelPropertyDetails = cur.fetchall()
+            return render_template('cancelProperty.html', cancelPropertyDetails=cancelPropertyDetails)
+        
+        if request.form['but'] == 'back':
+            return redirect('/customerHome')
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT reserve.Start_Date, reserve.Property_Name, reserve.Owner_Email, concat(Street, City, State, Zip)\
+         from reserve natural join property where Customer='{}' and Was_Cancelled=0;".format(email))
+        cancelPropertyDetails = cur.fetchall()
+        return render_template('cancelProperty.html', cancelPropertyDetails=cancelPropertyDetails)
 
 @app.route('/setDate')
 def setDate():
