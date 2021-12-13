@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -7,10 +8,143 @@
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
 
 </head>
+
 <body>
-    <h1>Schedule Flight</h1>
+  <h1>Schedule Flight</h1>
+
+  <div>
+
     <form method="POST">
-        <button class = "but" name = "but" value = "back" type= "submit">Back to Home</button>
+      <div>
+        <label for="num">Flight Number: </label>
+        <input type="number" id="num" name="num">
+      </div>
+
+      <div>
+      <label for="date">Flight Date: </label>
+      <input type="date" id="date" name="date">
+      </div>
+
+
+      <div>
+
+        <label for="airline">Airline: </label>
+        <select id="airline" name="line">
+          <option value="American Airlines">American</option>
+          <option value="Delta Airlines">Delta</option>
+          <option value="Interjet">Interjet</option>
+          <option value="JetBlue Airways">JetBlue</option>
+          <option value="Southwest Airlines">Southwest</option>
+          <option value="Spirit Airlines">Spirit</option>
+          <option value="United Airlines">United</option>
+          <option value="WestJet">WestJet</option>
+  
+        </select>
+
+      </div>
+
+      <div>
+
+        <label for="cost">$ Per Person: </label>
+        <input type="number" id="cost" name="cost">
+
+      </div>
+      <div>
+
+        <label for="from">From Airport: </label>
+        <input id="from" name="from">
+
+      </div>
+     
+      <div>
+        <label for="to">To Airport: </label>
+        <input id="to" name="to">
+      </div>
+
+      <div>
+
+        <label for="capacity">Capacity: </label>
+        <input type="number" id="capacity" name="capacity">
+      </div>
+
+      <div>
+        <label for="from">Current Date: </label>
+        <text>{{currDate}}</text>
+
+      </div>
+
+      <div>
+        <label for="depTime">Departure Time: </label>
+        <input type="time" id="depTime" name="deptime">
+      </div>
+
+      <div>
+        <label for="arrTime">Arrival Time: </label>
+        <input type="time" id="from" name="arrtime">
+      </div>
+
+      <div>
+        <input type="submit">
+        <input type="hidden" name="btn_identifier" value="sortOne" />
+  
+
+      </div>
+  
+
     </form>
+
+
+
+  </div>
+
+  <div>
+    <h3>Confirmation:
+    </h3>
+    <div>
+    <text>Flight Number: {{num}}</text>
+  </div>
+  <div>
+    <text>Airline Name: {{airline}}</text>
+  </div><div>
+    <text>From Airport: {{fromA}}</text>
+  </div><div>
+
+    <text>To Airport: {{toA}}</text>
+  </div><div>
+
+    <text>Departure Time: {{depTime}}</text>
+  </div><div>
+
+    <text>Arrival Time: {{arrTime}}</text>
+  </div><div>
+
+    <text>Flight Date: {{dateStr}}</text>
+  </div><div>
+
+    <text>Cost: ${{cost}}</text>
+  </div><div>
+
+    <text>Capacity: {{capacity}}</text>
+  </div><div>
+
+    <text>Current Date: {{currDate}}</text>
+  </div>
+</div>
+
+
+
+
+
+  <div>
+    <form method="POST">
+      <input type="hidden" class="but" name="btn_identifier" value="viewAll" />
+      <button class="but" name="but" value="viewAll" type="submit">View All Flights</button>
+    </form>
+
+    <form method="POST">
+      <input type="hidden" class="but" name="btn_identifier" value="back" />
+      <button class="but" name="but" value="back" type="submit">Back to Home</button>
+    </form>
+  </div>
 
 </body>

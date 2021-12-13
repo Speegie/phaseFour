@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL, MySQLdb
 import yaml
-from datetime import date
+from datetime import date, datetime
 import re
 
 app = Flask(__name__)
@@ -150,17 +150,177 @@ def adminHome():
 
 @app.route('/scheduleFlight', methods=['GET', 'POST'])
 def scheduleFlight():
+    cur = mysql.connection.cursor()
+
+    currDate = date.today()
+
+
     if request.method == 'POST':
-        if request.form['but'] == 'back':
+        if request.form['btn_identifier'] == 'sortOne':
+            num = request.form.get('num')
+            dateStr = request.form.get('date')
+            date1 = datetime.strptime(dateStr, '%Y-%m-%d').date()
+
+            airline = request.form.get('line')
+            cost = request.form.get('cost')
+            fromA = request.form.get('from')
+            toA = request.form.get('to')
+            capacity = request.form.get('capacity')
+            depTime = request.form.get('deptime')
+            arrTime = request.form.get('arrtime')
+       
+            if (currDate > date1):
+                return redirect('/error')
+            
+            resultVal = cur.execute("call schedule_flight('{}', '{}', '{}', '{}', '{}', '{}', '{}', {}, {}, '{}');".format
+                (num,
+                airline,
+                fromA,
+                toA,
+                depTime,
+                arrTime,
+                date1,
+                cost,
+                capacity,
+                currDate))
+            
+            mysql.connection.commit()
+            
+            # viewAirportDetails = cur.fetchall()
+            
+            return render_template('scheduleFlight.html', num=num, dateStr=dateStr, airline=airline, cost=cost, fromA=fromA, toA=toA, capacity=capacity
+                ,depTime=depTime, arrTime=arrTime, currDate=currDate)
+
+
+        if request.form['btn_identifier'] == 'back':
             return redirect('/adminHome')
-    return render_template('scheduleFlight.html')
+        if request.form['btn_identifier'] == 'viewAll':
+            return redirect('/viewAllFlights')
+    return render_template('scheduleFlight.html', currDate = currDate)
+
+@app.route('/viewAllFlights', methods=['GET', 'POST'])
+def viewAllFlights():
+    cur = mysql.connection.cursor()
+
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/scheduleFlight')
+
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM Flight")
+        viewFlightDetails = cur.fetchall()
+        return render_template('viewAllFlights.html', viewFlightDetails=viewFlightDetails)
+    return render_template('viewAllFlights.html')
+
+@app.route('/error', methods=['GET', 'POST'])
+def error():
+    if request.method == 'POST':
+        if request.form['btn_identifier'] == 'back':
+            return redirect('/scheduleFlight')
+    return render_template('error.html')
+
+
 
 @app.route('/removeFlight', methods=['GET', 'POST'])
 def removeFlight():
+    cur = mysql.connection.cursor()
+
+    currDate = date.today()
+
+
     if request.method == 'POST':
-        if request.form['but'] == 'back':
+        if request.form['btn_identifier'] == 'sortOne':
+            resultValue = cur.execute("SELECT * FROM Flight order by Airline_Name asc")
+            viewFDetails = cur.fetchall()
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
+        if request.form['btn_identifier'] == 'sortTwo':
+            resultValue = cur.execute("SELECT * FROM Flight order by cast(Flight_Num as SIGNED) desc")
+            viewFDetails = cur.fetchall()
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
+        if request.form['btn_identifier'] == 'sortThree':
+            resultValue = cur.execute("SELECT * FROM Flight order by cast(Flight_Date as DATE) asc")
+            viewFDetails = cur.fetchall()
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
+        if request.form['btn_identifier'] == 'sortFour':
+            resultValue = cur.execute("SELECT * FROM Flight order by cost desc")
+            viewFDetails = cur.fetchall()
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
+        if request.form['btn_identifier'] == 'sortFive':
+            resultValue = cur.execute("SELECT * FROM Flight order by capacity desc")
+            viewFDetails = cur.fetchall()
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
+
+        if (request.form['btn_identifier'] == 'sortDate'):
+            datee = request.form.get('date')
+            datee2 = request.form.get('date2')
+            
+            resultValue = cur.execute("SELECT * FROM Flight where Flight_Date between '" + (datee) + "' and '" + datee2 + "'")
+
+            viewFDetails = cur.fetchall()            
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, datee=datee, datee2 = datee2, currDate = currDate)
+        
+        if (request.form['btn_identifier'] == 'sortLine'):
+            aline = request.form.get('line')
+            print(aline)
+            
+            resultValue = cur.execute("SELECT * FROM Flight where Airline_Name = '" + (aline) + "'")
+
+            viewFDetails = cur.fetchall()            
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate = currDate)
+        
+        if (request.form['btn_identifier'] == 'sortEight'):
+           
+            resultValue = cur.execute("SELECT * FROM Flight")
+
+            viewFDetails = cur.fetchall()            
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate = currDate)
+        
+        if (request.form['btn_identifier'] == 'sortNum'):
+            numm = request.form.get('num')
+            
+            resultValue = cur.execute("SELECT * FROM Flight where Flight_Num = " + (numm))
+
+            viewFDetails = cur.fetchall()            
+            return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate = currDate)
+        
+
+        if request.form['btn_identifier'] == 'remItems':
+            index = request.form.get('rem')
+            indexInt = int(index)
+            # name = request.form.get('date')
+            resultVal = cur.execute("SELECT * FROM Flight")
+
+            viewFDetails = cur.fetchall()
+
+            num1 = viewFDetails[indexInt][0]
+            name1 = viewFDetails[indexInt][1]
+
+          
+            
+            resultVal = cur.execute("call remove_flight('{}', '{}', '{}');".format
+                (num1,
+                name1,
+                currDate))
+            
+            mysql.connection.commit()
+            resultVal = cur.execute("SELECT * FROM Flight")
+
+            viewFDetails = cur.fetchall()
+            
+            return render_template('removeFlight.html', currDate=currDate, viewFDetails=viewFDetails)
+
+
+        if request.form['btn_identifier'] == 'back':
             return redirect('/adminHome')
-    return render_template('removeFlight.html')
+        if request.form['btn_identifier'] == 'viewAll':
+            return redirect('/viewAllFlights')
+    if request.method == 'GET':
+        resultValue = cur.execute("SELECT * FROM Flight")
+        viewFDetails = cur.fetchall()
+        print(viewFDetails)
+        return render_template('removeFlight.html', viewFDetails=viewFDetails, currDate=currDate)
+    return render_template('removeFlight.html', currDate = currDate)
+
 
 @app.route('/adminProcessDate', methods=['GET', 'POST'])
 def processDate():
@@ -323,8 +483,14 @@ def viewProperties():
             viewPropDetails = cur.fetchall()
             return render_template('viewProperties.html', viewPropDetails=viewPropDetails)
         if (request.form['btn_identifier'] == 'sortFour'):
-            text1 = request.form['text']
+            text1 = request.form.get('text')
             text2 = request.form.get('text2')
+            
+            if (text1 > text2):
+                dummy = text2
+                text2 = text1
+                text1 = dummy
+            
             resultValue = cur.execute("SELECT * FROM view_properties where capacity > " + (text1) + " and capacity < " + text2 )
 
             viewPropDetails = cur.fetchall()            

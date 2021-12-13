@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <title>Travel Reservation Service</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
+
+</head>
+
+<body>
+    <h1>Flight cannot be before the current date!</h1>
+
+    <div>
+        <form method="POST">
+          <input type="hidden" class="but" name="btn_identifier" value="back" />
+          <button class="but" name="but" value="back" type="submit">Edit Date</button>
+        </form>
+      </div>
+
+
+    </body>

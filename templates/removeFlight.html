@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
 
@@ -7,10 +8,159 @@
   <link rel="stylesheet" href="{{ url_for('static',filename='styles/style.css') }}">
 
 </head>
+
 <body>
-    <h1>Remove Flight</h1>
-    <form method="POST">
-        <button class = "but" name = "but" value = "back" type= "submit">Back to Home</button>
+  <h1>Remove Flight</h1>
+  <div class="table" style="border: black; border-width:1px; border-style: solid;">
+    <h3>Sort By:</h3>
+
+    <form method="POST">Dates:
+      <input name="date" type="date">-
+      <input name="date2" type="date">
+      <input type="submit">
+      <input type="hidden" name="btn_identifier" value="sortDate" />
+
     </form>
+    <div>
+      <text>Dates chosen: [{{datee}}] - [{{datee2}}]</text>
+    </div>
+
+  
+
+
+    <label for="from">Current Date: </label>
+    <text>{{currDate}}</text>
+
+    <form method="POST">
+
+      <label for="airline">Airline: </label>
+      <select id="airline" name="line">
+        <option value="American Airlines">American</option>
+        <option value="Delta Airlines">Delta</option>
+        <option value="Interjet">Interjet</option>
+        <option value="JetBlue Airways">JetBlue</option>
+        <option value="Southwest Airlines">Southwest</option>
+        <option value="Spirit Airlines">Spirit</option>
+        <option value="United Airlines">United</option>
+        <option value="WestJet">WestJet</option>
+
+      </select>
+      <input type="submit">
+      <input type="hidden" name="btn_identifier" value="sortLine" />
+
+    </form>
+
+
+   
+
+    <form method="POST">Flight Number:
+      <input name="num" type="number">
+      <input type="submit">
+      <input type="hidden" name="btn_identifier" value="sortNum" />
+
+    </form>
+
+
+    <form method="POST">
+      <input type="hidden" name="btn_identifier" value="sortOne" />
+      <input type="submit" value="Airline">
+    </form>
+
+    <form method="POST">
+      <input type="hidden" name="btn_identifier" value="sortTwo" />
+      <input type="submit" value="Number">
+    </form>
+
+    <form method="POST">
+      <input type="hidden" name="btn_identifier" value="sortThree" />
+      <input type="submit" value="Date" />
+    </form>
+
+    <form method="POST">
+      <input type="hidden" name="btn_identifier" value="sortFour" />
+      <input type="submit" value="Cost" />
+    </form>
+
+    <form method="POST">
+      <input type="hidden" name="btn_identifier" value="sortFive" />
+      <input type="submit" value="Capacity" />
+    </form>
+
+    <form method="POST">
+      <input class="reset" type="hidden" name="btn_identifier" value="sortEight" />
+      <input class="reset" type="submit" value="RESET FILTERS">
+    </form>
+
+
+
+  </div>
+
+
+  <div class="data">
+    <table class="center">
+      <thead>
+        <tr style="background-color: lightgray">
+          <th>Flight #</th>
+          <th>Airline</th>
+          <th>From Airport</th>
+          <th>To Airport</th>
+          <th>Departure Time</th>
+          <th>Arrival Time</th>
+          <th>Date</th>
+          <th>Cost</th>
+          <th>Capacity</th>
+
+
+
+
+
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in viewFDetails %}
+
+        <tr>
+          
+          <td> {{row[0]}} </td>
+          <td> {{row[1]}} </td>
+          <td> {{row[2]}} </td>
+          <td> {{row[3]}} </td>
+          <td> {{row[4]}} </td>
+          <td> {{row[5]}} </td>
+          <td> {{row[6]}} </td>
+          <td> {{row[7]}} </td>
+          <td> {{row[8]}} </td>
+
+
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table" style="border: black; border-width:1px; border-style: solid;">
+    <h2>Which flight would you like to remove?</h2>
+    <form method="POST">
+    <label for="drop">Flight Number: </label>
+      <select id="drop" name="rem">
+        {% for row in viewFDetails %}
+
+        <option value={{loop.index - 1}}>{{row[0]}}</option>
+        {% endfor %}
+
+      </select>
+      <input type="submit">
+      <input type="hidden" name="btn_identifier" value="remItems" />
+
+    </form>
+  </div>
+
+
+  <div>
+    <form method="POST">
+      <input type="hidden" class="but" name="btn_identifier" value="back" />
+      <button class="but" name="but" value="back" type="submit">Back to Home</button>
+    </form>
+  </div>
 
 </body>
