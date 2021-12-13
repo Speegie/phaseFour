@@ -145,6 +145,9 @@ def adminHome():
         if request.form['but'] == 'viewO':
             return redirect('/viewOwners')
         if request.form['but'] == 'logout':
+            name = ""
+            email = ""
+            status = [0, 0, 0]
             return redirect('/')
     return render_template('adminHome.html') 
 
@@ -161,6 +164,9 @@ def ownerHome():
             return redirect('/deleteOwnerAccount')
        
         if request.form['but'] == 'logout':
+            name = ""
+            email = ""
+            status = [0, 0, 0]
             return redirect('/')
     return render_template('ownerHome.html') 
 
@@ -186,6 +192,9 @@ def custHome():
         
        
         if request.form['but'] == 'logout':
+            name = ""
+            email = ""
+            status = [0, 0, 0]
             return redirect('/')
     return render_template('custHome.html') 
 
@@ -756,9 +765,6 @@ def deleteOwnerAccount():
         if request.form['btn_identifier'] == 'back':
             return redirect('/ownerHome')
             #Change when have owner home
-        if request.form['btn_identifier'] == 'logOut':
-            email = ""
-            return redirect('/')
         if request.form['btn_identifier'] == 'deleteAccount':
             cur = mysql.connection.cursor()
             cur.execute("call remove_owner('" + ownerEmail + "');")#.format(ownerEmail))
