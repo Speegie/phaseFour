@@ -28,7 +28,7 @@ def index():
     cur = mysql.connection.cursor()
     if request.method == 'POST':
         if request.form['action'] == 'regUser':
-            return redirect('/register')
+            return redirect('/registerIntermediate')
         # Fetch form data
         userDetails = request.form
 
@@ -58,14 +58,62 @@ def index():
         return redirect('/')
     return render_template('index.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
+@app.route('/registerIntermediate', methods=['GET', "POST"])
+def registerIntermediate():
+    if request.method == "POST":
+        if request.form['but'] == "customer":
+            return redirect('/registerCustomer')
+        if request.form['but'] == "owner":
+            return redirect('/registerOwner')
+    
+    return render_template("registerIntermediate.html")
+
+@app.route('/registerOwner', methods=['GET', 'POST'])
+def registerOwner():
     cur = mysql.connection.cursor()
     if request.method == "POST":
         if request.form['action'] == 'back':
             return redirect('/')
-    
-    return render_template('register.html')
+        if request.form['action'] == 'submit':
+            cur = mysql.connection.cursor()
+            details = request.form
+
+            fname = details["fname"]
+            lname = details['lname']
+            email = details['email']
+            password = details['password']
+            confirm = details['confirm']
+            phone = details['phone']
+
+            if (password == confirm):
+                cur.execute("call register_owner('{}', '{}', '{}', '{}', '{}');".format(email, fname, lname, password, phone))
+
+    return render_template('registerOwner.html')
+
+@app.route('/registerCustomer', methods=['GET', 'POST'])
+def registerCustomer():
+    cur = mysql.connection.cursor()
+    if request.method == "POST":
+        if request.form['action'] == 'back':
+            return redirect('/')
+        if request.form['action'] == 'submit':
+            cur = mysql.connection.cursor()
+            details = request.form
+
+            fname = details["fname"]
+            lname = details['lname']
+            email = details['email']
+            password = details['password']
+            confirm = details['confirm']
+            phone = details['phone']
+            card = details['card']
+            cvv = details['cvv']
+            exp = details['exp']
+
+            if (password == confirm):
+                cur.execute("call register_owner('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(email, fname, lname, password, phone, card, cvv, exp))
+
+    return render_template('registerCustomer.html')
 
 @app.route('/intermediate', methods=['GET', 'POST'])
 def intermediate():
