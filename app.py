@@ -180,7 +180,7 @@ def custHome():
         if request.form['but'] == '6':
             return redirect('/reviewProperty')
         if request.form['but'] == '7':
-            return redirect('/viewProperties')
+            return redirect('/viewIndividualProperties')
         if request.form['but'] == '8':
             return redirect('/customerRateOwner')
         
