@@ -89,7 +89,7 @@ def registerOwner():
     if request.method == "POST":
         if request.form['action'] == 'back':
             return redirect('/')
-        if request.form['action'] == 'submit':
+        if request.form['action'] == 'register':
             cur = mysql.connection.cursor()
             details = request.form
 
@@ -113,8 +113,9 @@ def registerCustomer():
     cur = mysql.connection.cursor()
     if request.method == "POST":
         if request.form['action'] == 'back':
+            print("goodbyte")
             return redirect('/')
-        if request.form['action'] == 'submit':
+        if request.form['action'] == 'register':
             cur = mysql.connection.cursor()
             details = request.form
 
@@ -128,9 +129,19 @@ def registerCustomer():
             cvv = details['cvv']
             exp = details['exp']
 
+            # print("fname: ", fname)
+            # print("lname: ", lname)
+            # print("email: ", email)
+            # print("password: ", password)
+            # print("confirm: ", confirm)
+            # print("phone: ", phone)
+            # print("card: ", card)
+            # print("cvv: ", cvv)
+            # print("exp: ", exp)
+
             if (password == confirm):
-                cur.execute("call register_owner('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(
-                    email, fname, lname, password, phone, card, cvv, exp))
+                cur.execute("call register_customer('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(
+                    email, fname, lname, password, phone, card, cvv, exp, None))
                 mysql.connection.commit()
 
         return redirect("/registerCustomer")
