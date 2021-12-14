@@ -40,10 +40,10 @@ def index():
 
         if request.form['action'] == 'loginUser':
             database_password = cur.execute("select pass from accounts where email=%s", (email,))
-            print("database password: ", database_password)
 
-            database_password = cur.fetchone()[0]
-            print("fetch: ", database_password)
+            if database_password == 1:
+                database_password = cur.fetchone()[0]
+                print("fetch: ", database_password)
 
             if database_password == password:
                 print("same")
